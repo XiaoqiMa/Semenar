@@ -1,0 +1,9 @@
+# Ingore everything
+*
+#except tex files
+
+!.gitignore
+!*.tex
+!*.bib
+
+!*/

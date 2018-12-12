@@ -1,0 +1,845 @@
+%%%%%%%%%%%%%%%%%%%%%%% file typeinst.tex %%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This is the LaTeX source for the instructions to authors using
+% the LaTeX document class 'llncs.cls' for contributions to
+% the Lecture Notes in Computer Sciences series.
+% http://www.springer.com/lncs       Springer Heidelberg 2006/05/04
+%
+% It may be used as a template for your own input - copy it
+% to a new file with a new name and use it as the basis
+% for your article.
+%
+% NB: the document class 'llncs' has its own and detailed docume visdualentation, see
+% ftp://ftp.springer.de/data/pubftp/pub/tex/latex/llncs/latex2e/llncsdoc.pdf
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[runningheads,a4paper]{llncs}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{csquotes}
+\usepackage{subcaption}
+\setcounter{tocdepth}{3}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{colortbl}
+\usepackage{xcolor}
+%\usepackage{hyperref}
+\usepackage[plainpages=false]{hyperref}
+\usepackage[nameinlink]{cleveref}
+
+
+% Colors
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\definecolor{num}{RGB}{102,0,153}
+\definecolor{str}{RGB}{0,128,128}
+\definecolor{const}{RGB}{0,0,128}
+\definecolor{numb}{RGB}{0,0,255}
+
+\definecolor{democratic}{HTML}{71AFFF}%#71afff blue
+\definecolor{republican}{HTML}{FF7272}%#ff7272 red
+\definecolor{mutual}{HTML}{FFE371}%#ffe371 yellow
+\definecolor{neutral}{HTML}{C4C4C4}%#c4c4c4 grey
+
+% Listings should work, but does not source:https://tex.stackexchange.com/questions/83085/how-to-improve-listings-display-of-json-files
+\lstdefinelanguage{json}{
+	basicstyle=\normalfont\ttfamily\scriptsize\color{num},
+	extendedchars=true,
+	numbers=left,
+	%    numberstyle=\scriptsize,
+	stepnumber=1,
+	numbersep=8pt,
+	showstringspaces=false,
+	breaklines=true,
+	frame=lines,
+	backgroundcolor=\color{background},
+	escapechar=\¢,escapebegin=\color{str},
+	literate=
+	*{:}{{{\color{punct}{:}}}}{1}
+	{,}{{{\color{punct}{,}}}}{1}
+	{\{}{{{\color{delim}{\{}}}}{1}
+	{\}}{{{\color{delim}{\}}}}}{1}
+	{[}{{{\color{delim}{[}}}}{1}
+	{]}{{{\color{delim}{]}}}}{1}
+	{1454284800,}{{{\color{numb}{\hspace{5em}1454284800}},}}{1}
+	{1,}{{{\color{numb}{\hspace{1em}1}},}}{1}
+	{"}{{{\color{delim}{"}}}}{1},
+}
+\lstset{
+	emph={False, NULL},
+	emphstyle=\color{const}
+}
+%explanation https://tex.stackexchange.com/questions/36361/how-can-i-inject-the-proper-amount-of-vertical-space-between-captions-and-figure/36362#comment72508_36362
+\setlength{\intextsep}{5px}
+
+\urldef{\mailsa}\path|{jan.bachmann, jan.hafer, xiaoqi.ma, zain.selman}@rwth-aachen.de|
+\newcommand{\keywords}[1]{\par\addvspace\baselineskip
+	\noindent\keywordname\enspace\ignorespaces#1}
+\newcommand{\boards}[1]{\textit{politics} #1 \textit{The\_Donald}}
+
+\begin{document}
+	
+	\mainmatter  % start of an individual contribution
+	
+	% first the title is needed
+	\title{Political Orientation on Reddit}
+	
+	% a short form should be given in case it is too long for the running head
+	\titlerunning{Political Orientation on Reddit}
+	
+	\author{Jan Bachmann\and Jan Philipp Hafer\and Xiaoqi Ma\and Zain Selman}
+	%
+	\institute{RWTH Aachen University,\\
+		52074 Aachen, Germany\\
+		\mailsa\\}
+	\maketitle
+	
+	
+	\begin{abstract}
+		When traversing the internet, e.g. on a search for information, one might come across content which contains political bias from other humans. While news outlets are more or less trying to remain neutral, as part of their mission, a lot of content is created by private individuals, which have no or few concerns about their bias. One of those sites where users can anonymously publish their opinion is reddit, which is in the top 10 of Alexa's ranking system. Reddit features a large, publicly accessible dataset that suits this work well. In this work we want to analyse the political orientation of users on reddit using the two most notorious political boards, which, due to their large volume, offer the best possibility to analyse users political orientation. We analysed language behaviour, cross subreddit activity, user behaviour, and temporal behaviour. Our results suggest that there are differences in certain behavioural patterns, and that its possible to predict political orientation with good accuracy using frequently used words.
+		\keywords{reddit, politics, The\_Donald, analysis, orientation}
+	\end{abstract}
+	
+	\section{Introduction}
+	
+	Reddit is among today's most used websites of the internet~\cite{reddit-traffic-stats}. It describes
+	itself as a collection of thousands of communities, allowing its users to socialize and discuss
+	about various topics, be it sports, movies or politics. It claims that it has over 330 million active monthly users on average, surfing through more than 138 thousand different subreddits~\cite{reddit-about}. There is a specific subreddit (a community specialized on a certain topic) for nearly every topic one could imagine. Users can create and share content in forms of texts, pictures, links and comments, participate in discussion or just come and leave as a spectator.
+	
+	The result of the 2016 presidential election in the U.S.A. left a strong part of the mainstream
+	media and population in shock.
+	A subreddit called \textit{The\_Donald}, dedicated to the current president of
+	the United States, Donald Trump, creates a space for discussions and content for his supporters~\cite{the-donald}.
+	As the subreddit is restricted to Trump supporters by rule, politically opposing content is non-existent.
+	While \textit{The\_Donald} serves as a home for conservative leaning Trump supporters,
+	the subreddit \textit{politics} does the opposite~\cite{politics}. Officially, it deals with all kinds of
+	political news regarding the U.S. Realistically, most of its content is based around progressive/liberal
+	leaning content, even though conservative posts are not banned explicitly.
+	However, if a users decides to post Trump supporting content,
+	the submission will most likely get downvoted rather quickly. This causes the post to
+	disappear from the subreddit's front page, while progressive leaning posts will get upvoted more often,
+	resulting in it being viewed by more users, as it will appear on the subreddit's landing page.
+	
+	% The prejudices that liberals tend to be overly sensitive or that Trump-supporters use a more aggressive
+	% approach while argueing, are just two examples for bias based on one's political orientation.
+	In this analysis, we take users of \boards{and} as representative for a left- or
+	right- leaning political orientations. We work on the comment data of reddit to find interesting similarities and deviations between both user groups in terms of language and behavioural patterns.
+	% Are there abnormalities in posting
+	% behaviour, more aggressive or subtile form of speech or varying commenting frequencies?
+	% The list of potential hypothesis is long, we will try to verify or disprove a few of them.
+	
+	% \subsection{Data}
+	% When submitting content on reddit, be it plane text, a link to a website or a picture, other users
+	% are able to comment on these topics. Users can reply to submissions and other comments or simply
+	% state their opinion by up- or downvoting them.
+	% These comments provide a valuable source for our analysis, as they do not only contain information
+	% about the subreddit they were posted to, but also about the author, votes, time, content and link to the
+	% parent comment or submission.
+	
+	The data is openly available through an interface provided by reddit. However, we use an pre-packaged, archived dataset, uploaded by the user \textit{Dewarim} on reddit itself~\cite{dataset-source}, in order to reduce traffic, memory and time constraints. The whole available dataset
+	% is split on a yearly basis, ranging <- z: not true: the archives (not dataset) are split, and only on a monthly basis
+	ranges from 2005 up to 2017 and contains all comments including meta information on reddit.
+	As the US presidential election, the election battle, debates, and the aftermath mainly took place from 2016 to early 2017, we restricted our analysis to those years in hope of high political activity across the platform. Additionally, older and more recent data distinguish due to API changes, requiring additional effort for synchronization.
+	The restricted dataset contain around about 410 million comments in total, from which 41 million were issued in \textit{The\_Donald} and \textit{politics}.
+	The data itself is structured as a list of \textit{JSON} objects, making it easy to process.
+	% Each year of data is again divided on a monthly basis and formatted as a list of \textit{JSON} objects, enabling
+	% easy processing.
+	% \begin{lstlisting}[caption={Data entry for a single comment},label=lst:data_example,language=json,firstnumber=1]
+	%   { "author":"¢MilksteakConnoisseur¢",
+	%   "body":"¢Precisely.¢",
+	%   "created_utc":1454284800,
+	%   "parent_id":"¢t1\_czitvkn¢",
+	%   "subreddit":"¢politics¢",
+	%   "score":1, ...}
+	% \end{lstlisting}
+	% Listing~\ref{lst:data_example} is a snippet of a single data entry, highlighting the set's structure.
+	% This entry resolves to a comment, posted by the user \textit{MilksteakConnoisseur} on the \textit{politics}
+	% board. The \textit{score} field implies that the difference of up- and downvotes evaluates to 1, whilst
+	% \textit{parent\_id} links to the parent element of the comment, which could be another comment or the
+	% submission itself. Lastly, \textit{created\_utc} provides a timestamp in UTC time zone, indicating when
+	% the comment was issued.
+	
+	% \subsection{Fields of Analysis}
+	% The structure of the dataset allows us to partition the
+	% analysis into specific fields, each dealing with a certain aspect of the analysis in order to
+	% find correlations and differences between \textit{The\_Donald} and \textit{politics}.
+	Analysis is sectioned into several fields, each focusing on other aspects.
+	The first one will mainly focus on other subreddits aside from \boards{and}. Thereafter we study possible correlations between the user bases of the original subreddits and foreign ones.
+	The second Section is about investigation of the comment body for analysing the language used in both subreddits.
+	%  identify other subreddits that users from \textit{The\_Donald} and \textit{politics} post to,
+	% investigate on reddit's share of political users in general, as well as the potential political bias of other subreddits.
+	Thirdly we get into voting and replying behaviour of the user bases and analyse the language of comments user-wise.
+	% We will focus on keywords,
+	% linked webpages and a comparison of sentimental analysis and readability between the two source boards.
+	% We try to find
+	% users and groups with a strong impact on the discussions.
+	Fourthly, in the temporal analysis, we look for correlations between real life events and posting sessions.
+	The fifth and last content part is about prediction of political orientation using information from prior analysis.
+	After discussion of findings and methods, we conclude with summaries of the most important implications.
+	% We also define and explore chronological commenting sessions,
+	% Here we analyse the activities of mutual users of the source boards. Lastly, we initialize a
+	% trial for a machine learning classifier, using commonly used words to assign a comment to one of the source boards.
+	% Just as \textit{The\_Donald} and \textit{politics} differ in their political ideologies, we will find multiple
+	% differences and similarities between their user bases. Whilst some expected hypothesis will turn out to be
+	% false or unprovable, some results will expose interesting disparities in the user behaviour.
+	
+	\section{Related Work}
+	This Section gives a brief overview of the related field of studies in social networks, reddit and political discourse.
+	In the paper "Online Political Discourse in the Trump Era" Nithyanand et al. identified the factors that they assume must be the cause for the declining quality of political discourse in America~\cite{nithyanand2017online}.
+	In their paper "The Rise and Fall of Network Stars" Fire et al. tried to find the mechanism the emergence of new trends, using a graph representation of dynamic systems. They look at the change of the graph structure over time and identify which characteristics of the graph correlate to rise of a new trend~\cite{fire2017rise}.
+	The paper "Researching Social News" Mills analysed the front page of reddit, where the users decide what is popular and what is not, by analysing the ranking of popular news stories on the site~\cite{mills2011researching}.
+	
+	%\textit{Ideas}
+	%General properties of reddit (no idea if useful though)\\
+	%\url{https://blog.datastories.com/blog/reddit-front-page}\\
+	%Language analysis: sentiment and karma (upvotes)\\
+	%\url{https://cs224d.stanford.edu/reports/TingJason.pdf}\\
+	%
+	%Correlation maps\\
+	%\url{https://nycdatascience.com/blog/student-works/web-scraping-reddit-analyzing-user-behavior-and-top-content-from-a-marketing-perspective/}
+	%
+	%Timed behavior\\
+	%\url{https://www.altinity.com/blog/2017/10/5/big-dataset-all-reddit-comments-analyzing-with-clickhouse}\\
+	%
+	%time analysis and topolgy related work\\
+	%\url{http://dynamics.cs.washington.edu/stars.pdf}\\
+	%\url{http://dynamics.cs.washington.edu/code.html}
+	%\textbf{usable code} license BSD
+	
+	\section{Cross Subreddit Analysis}\label{sec:CrossSubredditAnalysis}
+	
+	% As most users do not spend all of their time exclusively on \textit{The\_Donald} or \textit{politics}, it might be interesting to see, which other subreddits are popular among them. In this Section, we want to find out how popular \textit{The\_Donald} and \textit{politics} are in general and how much impact they have on other subreddits and reddit as a whole. Afterwards we will check, if political users behave differently in their source board compared to other boards and neutral users respectively. Lastly, we try to find subreddits that are also highly political and potentially biased towards a conservative or liberal political spectrum, based on common user bases.
+	
+	Reddit does not only consist of \textit{The\_Donald} and \textit{politics} alone, but rather contains well over $100,000$ other subreddits~\cite{reddit-about}. This Section focuses on the behaviour of users from the two source boards in other subreddits, including the respective other. First, we check how popular \textit{The\_Donald} or \textit{politics} are in general, proving the statistical relevance of our findings in~\Cref{sub:cross_subreddit_general}. We continue by comparing the behaviour
+	of the two users bases across the platform towards each other and the common reddit user, regarding their commenting frequency in~\Cref{sub:cross_subreddit_commenting_frequency}.
+	The question whether reddit in general is politically active, or maybe even biased, will then move into focus in~\Cref{sub:cross_subreddit_political_subreddits}, before we close out by revealing potential connections between the two source boards and other highly biased subreddits in~\Cref{sub:cross_subreddit_pol_bias}.
+	
+	\subsection{Methods}\label{sub:cross_subreddit_motivation}
+	
+	Each user is assigned a group based on the boards he is posting to:
+	He is called \textit{\textbf{l}eft leaning}, if he posted to \textit{politics}, but \textbf{not} in \textit{The\_Donald}, \textit{\textbf{m}utual}, if he posted in both political source boards, \textit{\textbf{r}ight leaning}, if he posted in \textit{The\_Donald}, but \textbf{not} in \textit{politics} or \textit{\textbf{n}eutral}, if he posted in neither of the two source boards.
+	% \begin{itemize}
+	% 	\item \textbf{l}eft leaning, if he posted to \textit{politics}, but \textbf{not} in \textit{The\_Donald},
+	% 	\item \textbf{m}utual, if he posted in both political source boards,
+	% 	\item \textbf{r}ight leaning, if he posted in \textit{The\_Donald}, but \textbf{not} in \textit{politics} or
+	% 	\item \textbf{n}eutral, if he posted in neither of the two source boards.
+	% \end{itemize}
+	Additionally, if he posted in at least one of the two source boards, we refer to him as a \textit{political} user. Given a comment in subreddit \textit{s}, we then keep track of the following counts:
+	$$user\_count_{s,o} \text{ with } o \in \{l,r,m,n\}$$
+	describes the number of users that posted in \textit{s}. The second index depends on the assigned orientation of the author.
+	Similarly, $comment\_count_{s,o}$ describes the amount of comments that were found in \textit{s}.
+	For simplicity, we also define
+	$$total\_user\_count_{s} = \sum_{o \in \{l,r,m,n\}} user\_count_{s,o}$$
+	as the total number of users. By limiting our dataset to subreddits with more than 1500 users, we consider only boards with a certain statistical relevance.
+	
+	\subsection{General Questions}\label{sub:cross_subreddit_general}
+	
+	Comparing the $user\_count$s of \textit{The\_Donald} and \textit{politics} to other subreddits allows us to see
+	how popular they are within reddit.
+	We rank the most popular subreddits based on their $user\_count$ results in~\Cref{fig:user_highscore}.
+	% For this, we sort all subreddits by their respective $user\_count$ and see, where the two source boards rank.
+	% As Figure~\ref{fig:user_highscore} shows, \textit{politics}, with a user base of more than $570,000$, ranks as
+	% the subreddit with the 15th most users across whole reddit, while \textit{The\_Donald} ranks
+	% as 26th most popular subreddit with over $358,000$ unique users.
+	
+	\Cref{table:comment_highscore} shows the same ranking using the $comment\_count$ instead.
+	
+	\begin{table}
+		\caption{Most commented Subreddits:}
+		\centering
+		\setlength{\tabcolsep}{5px}
+		\begin{tabular}{lccccc}
+			\hline\hline
+			Subreddit & Number of comments & & Rank & \\
+			\hline
+			AskReddit & 40M & & 1 \\
+			politics & 23M & & 2 \\
+			The\_Donald & 14M & & 3 \\
+			leagueoflegends & 10M & & 4 \\
+			... & ... & & ...\\
+			\hline\hline
+		\end{tabular}
+		\label{table:comment_highscore}
+	\end{table}
+	
+	\subsubsection{Results \& Implications}
+	\Cref{fig:user_highscore} reveals that \textit{politics}, with a user base of more than $570,000$, ranks as the subreddit with the 15th most users across whole reddit, while \textit{The\_Donald} ranks as 26th most popular subreddit with over $358,000$ unique users.
+	When considering the amount of comments instead,~\Cref{table:comment_highscore} shows that \textit{politics} now ranks as the subreddit with the second highest amount of comments, while \textit{The\_Donald} is the third most commented on board, with an amount of 23 and 14 million respectively.
+	% Table~\ref{table:comment_highscore} provides the insight that \textit{politics} now ranks as the subreddit with the second highest amount
+	% of comments, while \textit{The\_Donald} is the third most commented on board. One can safely say that both subreddits are among
+	% the most popular boards on reddit.
+	% It is important to notice that \textit{politics} has nearly twice the size of \textit{The\_Donald}, which will affect our
+	% results in many ways.
+	
+	Both \boards{and} rank among reddit's most popular subreddits, when it comes to the size of user bases or amount of comments, proving that they are very relevant to the daily discussion on the platform. The higher rank in number of comments suggests that the discussion in the forums seem to be very active.
+	
+	
+	\subsection{Commenting Frequency}\label{sub:cross_subreddit_commenting_frequency}
+	\Cref{fig:user_highscore} and~\Cref{table:comment_highscore} imply that users from \textit{The\_Donald} and \textit{politics} post more often than neutral users. We calculate the mean of comments per user for all user groups over all subreddits of reddit in~\Cref{table:comments_per_user}. We want to find out, whether the prejudice that Trump supporters tend to spam more holds.
+	Additionally, we want to check whether the commenting frequency of political users differs between their activity on the source boards and other subreddits. In~\Cref{table:comments_per_user_source} we only look into \boards{and} and calculate the comments per user for exclusive and mutual users.
+	
+	\begin{table}%
+		\begin{subtable}[t]{0.45\textwidth}%
+			\centering
+			\caption{Comments per User}
+			\setlength{\tabcolsep}{5px}
+			\begin{tabular}{lccccc}
+				\hline\hline
+				User Group & Mean & Standard Deviation \\
+				\hline
+				left-leaning & 4.89 & 88.02 \\
+				mutual & 4.73 & 32.57 \\
+				right-leaning & 4.04 & 19.24 \\
+				neutral & 3.66 & 67.55 \\
+				\hline\hline
+			\end{tabular}
+			\label{table:comments_per_user}
+		\end{subtable}%
+		\hspace{1cm}
+		\begin{subtable}[t]{0.45\textwidth}%
+			\caption{Comments per User in Source Boards}
+			\centering
+			\setlength{\tabcolsep}{5px}
+			\begin{tabular}{lccccc}
+				\hline\hline
+				& \multicolumn{2}{c}{Subreddits} \\
+				User Origin  & politics & The\_Donald \\
+				\hline
+				exclusive     & 29.19    & 22.26 \\
+				mutual       & 70.88     & 62.20 \\
+				\hline\hline
+			\end{tabular}
+			\label{table:comments_per_user_source}
+		\end{subtable}%
+	\end{table}%
+	
+	\subsubsection{Results \& Implications}
+	\Cref{table:comments_per_user} highlights that exclusive users of \textit{politics} post most frequent, while the mean for mutual users is close to it. Right-leaning users tend to post less frequent, followed by neutral users. The deviations are quite high for all user bases, with the left-leaning group being the most extreme one, showing that there must be a high variance in the values.
+	
+	In~\Cref{table:comments_per_user_source} we find that users from \boards{and} do in fact post more often in their respective origin board compared to the mean. The value for left-leaning exclusive users is again higher than for right-leaning users and the counts for mutual users are significantly higher in both boards.
+	
+	
+	While~\Cref{table:comments_per_user} proved that exclusive users of \textit{politics} post more often than their counterparts in \textit{The\_Donald}, they only differ by one comment per user on average. Thus, the hypothesis that right-leaning users spam more, does \textbf{not} hold. However, neutral reddit users indeed seem to post less frequent than political users. The extreme deviation for left-leaning users could be explained by very extreme users. Alternatively, bots could be responsible for the high deviation as well. In comparison, the distribution of comments per right-leaning user seems to be more stable.
+	The fact that the means for mutual and left-leaning users are so close to each other indicates that both groups seem to share characteristics. The difference in deviations suggests that more very active users seem to isolate themselves in \textit{politics}. However, this also strengthens the bot hypothesis, as active bots would most likely only comment in one previously specified board, thus be assigned as left-leaning.
+	
+	In~\Cref{table:comments_per_user_source} it appears that political users indeed post more frequent in their source subreddits. However, this also correlates with the already active discussion space we showed in~\Cref{sub:cross_subreddit_general}. More interestingly, the number of comments per mutual user is more than twice as high as for users that post exclusively in \boards{or}, indicating that mutual users seem to take a very active part in the discussions in both boards. Combined with their
+	high share in the number of total users, shown in~\Cref{fig:user_highscore}, this leads to the fact that mutual users are responsible for approximately $69\%$ of all comments in \textit{The\_Donald} and $48\%$ in \textit{politics}, indicating that the discussion in \textit{politics} is more isolated. Either a lot of conservative users also post rarely in \textit{politics} or otherwise a lot of liberal users also take part in the discussions in \textit{The\_Donald}.
+	
+	In order to further investigate on their share of content in both boards, we compute every users posting ratio using following formula:
+	\[
+	ratio = \frac{don\_comments_u}{don\_comments_u + pol\_comments_u} \in ~[0,1],~\forall u \in \texttt{mutualUsers}
+	\]
+	Where $x\_comments_u$ is the amount of comments on $x$ by user $u$. Additionally we substract $0.5$ from the $ratio$ in order to center the ratio around 0. We can then analyse the distribution of these ratios and try to derive the effect of mutual users on both subreddits.
+	
+	Figure~\ref{fig:nofilter} supports our finding that mutual users are responsible for a high share of comments on the two source boards, as it is mostly linear.
+	% When analysing the share of mutual users activity on the two political subreddits, it appears as if the share of posts on the subreddits is caused by alot of users which are active on both boards, as seen in Figure~\ref{fig:nofilter} as it seems almost linear.
+	When going further and filtering out users without at least $5$ (\Cref{fig:high5}), $15$ (\Cref{fig:high15}), and $25$ (\Cref{fig:high25}) comments in total, the linear line shape changes to a rather S-shaped line, which polarizes the sides. This indicates that most of the users that are active on both boards, only account for few posts in total, and high active users are mostly active on their own subreddit, and only have a few posts in the respective other subreddit.
+	This shows that political users tend to stay in their origin boards and post much less across the opposing political board.
+	\subsection{Political Subreddits}\label{sub:cross_subreddit_political_subreddits}
+	Using the user bases of \boards{and}, we try to find other political subreddits by introducing the share of political users $pol\_share_s$ given subreddit \textit{s} by
+	$$pol\_share_s = \frac{\sum_{o \in {l,m,r}} user\_count_{s,o}}{total\_user\_count_s}$$
+	Extracting a list of subreddit with the highest shares of political users leads us to~\Cref{table:political_subreddits}.
+	
+	\begin{table}
+		\caption{Political Subreddits}
+		\label{table:share_users_subreddits}
+		\centering
+		\setlength{\tabcolsep}{5px}
+		\begin{tabular}{lccccc}
+			\hline\hline
+			Subreddit  & Political user share & Rank \\
+			\hline
+			The\_Donald     & 1 & 1\\
+			politics & 1 & 1\\
+			Mr\_Trump      & 0.94 & 2 \\
+			tucker\_carlson & 0.93 & 3 \\
+			...             & ... & ...\\
+			StillSandersForPres & 0.89 & 8 \\
+			TrumpForPrison  & 0.89 & 9 \\
+			...             & ... & ...\\
+			\hline\hline
+		\end{tabular}
+		\label{table:political_subreddits}
+	\end{table}
+	
+	We also calculate the mean of $pol\_share_s$ over all of reddit to see if reddit itself is political.
+	
+	\subsubsection{Results \& Implications}
+	The mean evaluates to approximately $23\%$ political users on average over all subreddits. \Cref{table:share_users_subreddits} is dominated by politically biased boards. Additionally, the first left-leaning subreddit only appears on position 8.
+	It is hard to tell whether reddit itself is political, without taking the semantics of users' comments into account. However, it is clear that reddit seems to attract people with a certain interest in politics, as more than a fifth of every subreddit's user base also posts in one of the two source boards on average.
+	
+	
+	The dominance of politically biased boards in~\Cref{table:share_users_subreddits} could potentially be explained by \textit{The\_Donald} being better connected to other conservative boards across reddit. Neutral poltical boards are nearly missing entirely, with \textit{PoliticalDiscussion} being the first one at rank 37. Taking users from two highly biased boards as source of political users is a possible explanation that we see so few neutral boards. It appears that these users tend to post specifically more likely in other biased subreddits. Another reason could be that subreddits like \textit{news} also contain a lot of neutral users, further decreasing the share of political users.
+	
+	
+	\subsection{Political Bias}\label{sub:cross_subreddit_pol_bias}
+	
+	Lastly, we try to find whether reddit in general tends towards a political orientation and which subreddits drastically drift towards the left or right. The first question can be answered by considering the share of users from \textit{politics} in other subreddits, comparing it to the same value for \textit{The\_Donald}.
+	
+	In order to find the subreddits with the most extreme user bases, regarding political bias, we introduce $bias_s \in [-1,1]$ for a given subreddit $s$ by:
+	$$bias_s = \frac{user\_count_{s,r} - user\_count_{s,l}}{\sum_{o \in \{l,m,r\}} user\_count_{s,o}}$$
+	% If the share of users from \textit{The\_Donald} is high in subreddit $s$, $bias_s$ will tend towards $1$. For a high user share of \textit{politics}
+	% users, it will go towards $-1$ or $0$, if the shares are roughly even. In Table~\ref{table:biased_subreddits} we list some interesting subreddits with
+	% extreme $bias$-scores.
+	If the share of users from \textit{The\_Donald} is high compared to the share of left-leaning users in subreddit $s$, $bias_s$ will tend towards $1$ and to $-1$ for the opposite case. \Cref{table:biased_subreddits} provides a selected set of subreddits with high $bias$ values.
+	\begin{table}
+		\caption{Biased Subreddits}
+		\centering
+		\setlength{\tabcolsep}{5px}
+		\begin{tabular}{lccccc}
+			\hline\hline
+			Subreddit  & bias  \\
+			\hline
+			The\_Donald     & 0.55 \\
+			TheRightBoycott & 0.32 \\
+			the\_frauke      & 0.31 \\
+			The\_Wilders     & 0.29 \\
+			The\_Farage      & 0.28 \\
+			...             & ... \\
+			BernieSanders     & -0.40 \\
+			occupywallstreet  & -0.41 \\
+			HillaryForAmerica & -0.42 \\
+			progressive       & -0.46 \\
+			BlueMidterm2018   & -0.48 \\
+			politics          & -0.72 \\
+			\hline\hline
+		\end{tabular}
+		\label{table:biased_subreddits}
+	\end{table}
+	\subsubsection{Results \& Implications}
+	It turns out that, on average, $9\%$ of each subreddit's user base also post in \textit{politics}. In comparison, only $6\%$ post exclusively in \textit{The\_Donald} and $9\%$ in both. These values are not significant enough  in their own to say that reddit as a whole is a left- or right-leaning platform, but they indicate a trend.
+	
+	In~\Cref{table:biased_subreddits}, the absolute $bias$-values are higher for the left leaning subreddits, which might be due to the size advantage of \textit{politics}.
+	However, it is interesting to notice that subreddits with the highest positive score are about European leaders of modern right-wing parties,
+	% , such as \textit{The\_Farage} for Nigel Farage, one of the main drivers behind the Brexit.
+	while on the other side of the spectrum we find typical liberal subreddits, mostly about U.S. related topics.
+	% , such as
+	% \textit{occupywallstreet}, a movement opposing the financial speculation business of Walstreet banks.
+	
+	
+	The focus on U.S related topics is due to the fact that \textit{politics} only deals with news regarding the U.S. itself. Finding mostly progressive topics on the list also further strengthens our ground truth that \textit{politics} can be considered liberal. All in all the $bias$-investigations arguably indicate that the right-wing movement is better connected internationally than its opposition. It would be interesting to see if we would find different results if we also considered general liberal subreddits like \textit{progressive} as a source board.
+	
+	
+	% \subsection{Summary}\label{sub:summary_CrossSubreddit}
+	% \textit{The\_Donald} and \textit{politics} are not only among reddit's most popular boards, but they
+	% are also home to the most active discussions (~\ref{sub:cross_subreddit_general}).
+	% Comparing the users from \textit{The\_Donald} and \textit{politics} to each other and also to neutral
+	% users, we saw that political users and especially \textit{politics} users tend to comment more frequently.
+	% Here we also saw an early first indication that the group of mutual users might be more liberal than
+	% conservative (~\ref{sub:cross_subreddit_commenting_frequency}).
+	% Afterwards we found that political users are well spread across reddit, resulting in a slight
+	% left-leaning orientation, which is also due to \textit{politics}' bigger size. The most political subreddits
+	% are not neutral discussion forums, but rather highly biased subreddits (~\ref{sub:cross_subreddit_political_subreddits}).
+	% Finally, Table~\ref{table:biased_subreddits} revealed that the most biased conservative boards deal with
+	% international topics, while the liberal opposition is focused on U.S. internal politics, indicating a
+	% strong international connections of modern right-wing movements.
+	
+	\section{Language Analysis}
+	In this part we want to retrieve information from the used language in the comments.
+	To this regard we check \textbf{lexemes} in~\Cref{sub:lexemes} and \textbf{semantic} in~\Cref{sub:semantic} of the given comments with the following \textit{analyses}:
+	The first is \textbf{lexemes} by usage of \textit{words} which includes \textit{website links}(and attributed meaning), \textit{frequency of words} to identify \texttt{key words} for group identity.
+	The second \textbf{semantic}, simplified as \textit{sentimental}, which returns \texttt{polarity}(affirmation or negation) and \texttt{subjectivity}(as contrast to neutrality of statement from a persons viewpoint).
+	\subsection{Lexemes}\label{sub:lexemes}
+
+	%1. analyse words and their occurence/frequency of use\par
+	%2.distribution of usage in don/pol
+	%3.keywords identification
+	In~\Cref{fig:wordmap3} the word cloud as frequency of most common words relative to another is plotted using word\_cloud~\cite{wordcloud}. Frequently used English words (called \textit{stop words}) and often used abbreviations like \textit{it's} are hereby not considered.\par
+	Relative common phrases are \texttt{trump}, \texttt{like}, \texttt{think}, \texttt{people}.
+	Comparing left to right, more frequently used words by \textit{politics} in~\Cref{fig:wordmap1}
+	are \texttt{please}, \texttt{going}, \texttt{hillary}, \texttt{bernie}, \texttt{really}. However there are not many overall identification keywords with notable frequency difference in use.
+	%right -> nope, going -> better, really ->
+	Much more frequent words in \textit{The\_Donald}, shown in~\Cref{fig:wordmap2} compared to \textit{politics} are
+	\texttt{fake}, \texttt{news}, \texttt{hate}, and hostile words. Notable mention here is \texttt{cnn} and other usually negative connoted words like \texttt{garbage} and \texttt{old}.\par
+	%Notable
+	%		relative common: trump, like, think, people\\
+	%		relatively more often used from much more to less:\\
+	%		left: please, right, hillary, bernie, going, really\\
+	%		right: fake, news, hate, cnn, crime, make, fuck, fucking, shit, garbage, old\\
+	\subsubsection{Links analysis}
+	\begin{table}%
+		\centering
+		\caption{comment news website bias on reddit}\label{table:linksbias}
+		\begin{subtable}{0.5\textwidth}%
+			\centering
+			\caption{politics}\label{table:linksbias-pol}
+			\begin{tabular}{l|l|c|l}%
+				& websites & share & score\\
+				\hline
+				\rowcolor{democratic}
+				1 & washingtonpost & 9.42\% &	-1\\
+				\rowcolor{democratic}
+				2 & nytimes & 8.45\% &	-1\\
+				\rowcolor{democratic}
+				3 & politico & 5.58\% &	-1\\
+				\rowcolor{democratic}
+				4 & cnn & 4.82\% &	-1\\
+				\rowcolor{neutral}
+				5 & politifact & 4.60\% &	-1\\
+				\rowcolor{neutral}
+				6 & realclearpolitics &	3.64\% &	0\\
+				\rowcolor{democratic}
+				7 & theguardian & 3.07\% &	-1\\
+				\rowcolor{neutral}
+				8 & fivethirtyeight &2.95\% &	0\\
+				\rowcolor{neutral}
+				9 & thehill & 2.79\% & 0\\
+				\rowcolor{democratic}
+				10 & huffingtonpost & 2.70\% & -1\\
+				\vdots & \vdots & \vdots \\
+				\rowcolor{republican}
+				17 & breitbart & 1.41\% & 1\\
+				\vdots & \vdots & \vdots \\
+				\rowcolor{republican}
+				25 & foxnews & 1.19\% & 1
+			\end{tabular}%
+		\end{subtable}%
+		\begin{subtable}{0.5\textwidth}%
+			\centering
+			\caption{The\_Donald}\label{table:linksbias-don}
+			\begin{tabular}{l|l|c|l}%
+				& websites & share & score\\
+				\hline
+				\rowcolor{republican}
+				1 & breitbart &	13.94\%  &	1\\
+				\rowcolor{republican}
+				2 & dailymail.co.uk &	7.57\% &	1\\
+				\rowcolor{democratic}
+				3 & nytimes &	7.45\% &	-1\\
+				\rowcolor{democratic}
+				4 & washingtonpost &	7.32\% &	-1\\
+				\rowcolor{republican}
+				5 & foxnews	& 7.02\% &	1\\
+				\rowcolor{democratic}
+				6 & cnn &	5.94\% &	-1\\
+				\rowcolor{democratic}
+				7 & theguardian &	5.51\% &	-1\\
+				\rowcolor{democratic}
+				8 & politico &	5.03\% &	-1\\
+				\rowcolor{republican}
+				9 & dailycaller	 & 4.27\% &	1\\
+				\rowcolor{neutral}
+				10 & thehill	 & 3.06\% &	0\\
+				\vdots & \vdots & \vdots & \vdots\\
+				\rowcolor{democratic}
+				13 & huffingtonpost &	2.25\% &	-1\\
+				\vdots & \vdots & \vdots & \vdots\\
+				\rowcolor{neutral}
+				17 & nbcnews & 2.03\% & 0
+			\end{tabular}%
+		\end{subtable}%
+	\end{table}%
+	%\url{https://mediabiasfactcheck.com/}
+	%\url{https://www.allsides.com/media-bias/media-bias-ratings}
+	News websites, as advertisement platforms, target certain groups, often with certain political bias.
+	For English speaking news websites we found 2 bigger collection websites that do justified categorization of these:\\
+	mediabiasfactchec(\texttt{mbfc})~\cite{mbfc} and allsides(\texttt{allsides})~\cite{allsides}.
+	%\url{https://mediabiasfactcheck.com/} (\texttt{mbfc}) and \\
+	%\url{https://www.allsides.com/media-bias/media-bias-ratings} (\texttt{allsides}).\par
+	\texttt{mbfc} provides a bias categorization with weighting of different aspects. Therefore they first choose the left or right leaning and then use different categories for which they use the mean of the weights in $\{0,1,\ldots,10\}$. However they do not provide the underlying decision reasons for the weights (meaning analysed articles).
+	Additionally they claim to do fact checking, but do not provide exact methodology on what base. More accurately they do not explain how they can recognize wrong facts (and which wrong facts were found) and being vague about the time scale they are updated. User feedback is not provided.\par
+	\texttt{allsides} however provides user feedback and includes that point for a confidence level in the decision, but does not do fact checking. The granularity of bias is with 5 steps $\{-2,-1,\ldots,2\}$ from left to right a more broad description.\par
+	Since we do not concentrate on fact checking and want to have simple results, we use \texttt{allsides}. Especially to correct the websites and our own bias, we want to use feedback which is not provided in \texttt{mbfc}.\par
+	%4.left/right bias of links in don/pol subreddits
+	%5.role of direct use of multiple keywords in don/pol
+	\textbf{Results} Extracting the first mentioned website of each comment and assigning according types and bias $\{-1,0,1\}$ for left, neutral and right, we obtain the following results for the data set as shown in~\Cref{table:linksbias}.
+	Having in \textit{politics} 57465 news website links and in \textit{The\_Donald} 7812, we see in~\Cref{table:linksbias-pol} roughly 2.5\% red-leaning website, as might be expected from the left-leaning subreddit.
+	Comparing to~\Cref{table:linksbias-pol},~\Cref{table:linksbias-don} shows only 5\% neutral websites and all the most relevant websites from \textit{politics}.
+	\subsubsection{Implications}
+	The common phrases are with the controversial character of Trump not very surprising, but reflect the behavior of the debate and the election outcome. The language phrasing is typical for left and right leaning opinions: The left tends to more inclusive wording, whereas the right uses more frequently hostile language as already analysed in~\cite{nithyanand2017online}.
+	More interestingly are the common used phrases \texttt{fake}, \texttt{news} for where a further analysis should be very interesting and which news sources on what context were specifically aimed.
+	To this regard the keyword \texttt{cnn} and the used strategy of repeatedly accusations against the political enemy (including the media) and effect analysis may be of interest.\par
+	Linking on most relevant left-leaning websites does not indicate, as one might expect, left bias of a user. However frequent linking on right-leaning websites or neutral websites may give the political orientation more accurately. Several hypothesis for this behavior are made in~\Cref{sub:LanguageDiscussion}.
+	%		politics: 57465 in total\\
+	%		The\_Donald: 7812 in total\\
+	%9.language grammar relevant for left or right bias?
+	%10.readability relevant for left or right bias?
+	%\subsubsection{Grammar rules}
+	\subsection{Semantics analysis}\label{sub:semantic}
+	%6.information from sentimental analysis(THEORY) and role of irony
+	%7.sentimental score + keywords (Xias part?)
+	%8.sentimental score + link analysis? (plot left/right distribution over senti score)
+	%11.frequent used word combinations and the distribution of their sentimental score, link bias score and grammar
+	\begin{displayquote}
+		"Semantic change asks how words change meaning over time, and questions both the processes involved and the causes."~\cite[p.2]{bouss2013}
+	\end{displayquote}
+	Thus for a certain time point the assigned meaning of a word might be wrong and analysis must somehow reflect this process. Additionally adding to this hardness is the use in human subgroups having additionally or different meaning~\cite[p.]{bouss2013}.\par
+	Possible use of irony, per definition using unexpected situations (or here meaning of words) and sometimes even for humans hard to understand, adds to this problem.\par
+	The underlying idea of minimizing ironic statements is, that rarely people use highly subjective jokes, i.e. express subjective emotions within a joke. Irony works best, when one lets the audience identify with the situation, so the reader can draw conclusions later introduced as faulty.\par
+	For semantic analysis of the comments we choose the language processing library \textit{TextBlob}~\cite{textblob}. Processing the polarity sentimental score for each comment, we inspect the sentimental score distribution and combine it with chosen keywords.
+	\subsubsection{Results}
+	In~\Cref{table:post} characteristics of the sentimental score of each post are shown. Although there are much more comments posted in \textit{politics}, the mean and standard deviation are lower. A way to explain this is, that most comments behave more neutral rather than semantically extreme ones. The huge difference lies in the first quartile value. In \textit{The\_Donald}, more than a quarter of all posts are negative, while in \textit{politics} the proportion of negative comments is less than a quarter. Additionally, the third quartile value in \textit{The\_Donald} is higher.
+	\begin{table}
+		\caption{User Post Behaviour Statistics}
+		%    \vspace*{-15px}
+		\centering
+		\setlength{\tabcolsep}{5px}
+		\begin{tabular}{l | c | c  }
+			\hline\hline
+			& The\_Donald & politics \\
+			\hline
+			Subjectivity $>$ 0.6 &    \\
+			count &  3475323 & 5578708 \\
+			mean  &  0.07    & 0.04 \\
+			std   &  0.47    & 0.40 \\
+			25\%  & -0.25    & 0.2 \\
+			75\%  & 0.40     & 0.32 \\
+			\hline\hline
+		\end{tabular}
+		\label{table:post}
+	\end{table}
+	\subsection{Comment Keywords Comparison}
+	Additionally, we can analyse certain keywords and show whether those keywords might influence the sentimental score distribution.
+	\subsubsection{Results} Before plotting the keywords sentimental score distribution, we shall utilize a list of most frequently appeared words from language analysis stated previously. When choosing some sensitive keywords, like \textit{Trump} or \textit{Hillary}, we can obtain the corresponding results, which can be found in Figure~\ref{fig:trump} and Figure~\ref{fig:hillary}. For the keyword \textit{Trump}, we can observe the differences that those comments in \textit{The\_Donald} is more positive and less negative than the other subreddits, while the keywords \textit{Hillary} is slightly more negative than the others. Actually, the different keywords sentimental behaviour is quite obvious in various subreddits.
+	%\subsubsection{Polarity}
+	%\subsubsection{Subjectivity}
+	%\begin{itemize}
+	%\settowidth{\leftmargin}{{\Large$\square$}}\advance\leftmargin\labelsep
+	%\itemsep8pt\relax
+	%\renewcommand\labelitemi{{\lower1.5pt\hbox{\Large$\square$}}}
+	%    \item[\Large$\boxtimes$] What are the most common words used in don/pol subreddits?
+	%    \item[\Large$\boxtimes$] What is their distribution of usage don/pol subreddits?
+	%    \item[\Large$\boxtimes$] What can be told about left and right bias of links in don/pol subreddits?
+	%    \item[\Large$\boxtimes$] What possible left and right bias keywords in don/pol subreddits do exist?
+	%    \item[\Large$\boxtimes$] What role does direct use of multiple keywords play in don/pol subreddits?
+	%    \item[\Large$\boxtimes$] What information can be derived from sentimental analysis of text and what is the role of irony?
+	%	\item[\Large$\boxtimes$] What does the sentimental score tell us about key words?
+	%	\item[\Large$\boxtimes$] What does the sentimental score tell us in combination with link analysis?
+	%    \item -------------------- when we got the server and sufficient RAM --------------------
+	%    \item[\Large$\boxtimes$] Is language grammar relevant for left or right bias?
+	%    \item[\Large$\boxtimes$] Is readability relevant for left or right bias?
+	%    \item What are frequent used word combinations and the distribution of their sentimental score, link bias score and grammar?
+	%\end{itemize}
+	
+	\section{User Behaviour Analysis}
+	
+	%TODO highlighting important parts Subjectivity > XX in tabulars/tables, make the important parts colorful. The code for this is in the presentation.\\
+	%PLEASE do not use filling words like clearly, the "may" part belongs to discussion!
+	
+	In this chapter, we focus on analyzing user's behaviour to figure out whether there are very active users and how they behave in different subreddits.
+	
+	We take the following steps for preprocessing:
+	\begin{enumerate}
+		\item Identify mutual users and the subreddits users from \textit{The\_Donald} and \textit{politics},
+		\item extract all related comments for the three user types (\textit{mutual}, \textit{The\_Donald}, \textit{politics}),
+		\item Extract \textit{author}, \textit{score}, \textit{body}, \textit{link\_id}, \textit{created\_utc} of these comments,
+		\item Handle special characters or escape comments and rewrite data to csv.
+	\end{enumerate}
+	%block-wise 2 million rows of data reading each time not that important
+	
+	\subsection{Power User Analysis}
+	In order to be able to influence other's political orientation, one has to be very active in the subreddit by frequent and attentional comments (being either aggressive or inspiring), which is so called power user.Since reddit has a voting mechanism, it is assumed a high score reflects high attention of the community. Usually one would need information from whom these comments are and in what kind of debate they occur, but we do not have these information and simplify the situation.
+	
+	We define \textbf{two} criteria for the importance of a power user:
+	\begin{itemize}
+		\item[1.] Net score of the user's comments,
+		\item[2.] Number of times that the user's comment is linked by others.
+	\end{itemize}
+	The second criteria hereby presents the weight of the user's comment.
+	For extraction of power users, we traverse the data and sort the users by the total scores of all comments.
+	Further we assume that the author, who has the smallest \textit{created\_utc} under the specific \textit{link\_id}, is the comment submitter.
+	Based on this idea, we additionally get the users, whose comment has the highest references.
+	\subsubsection{Results \& Implications}
+	% \label{sub:UserAnalysis_conclusion1}
+	Following Table shows the upvote behaviour in both subreddits:
+	\begin{table}
+		\caption{Users' Upvote Behaviour Analysis}
+		%    \vspace*{-15px}
+		\centering
+		\setlength{\tabcolsep}{5px}
+		\begin{tabular}{l | c | c  }
+			\hline\hline
+			Measurements & politics & The\_Donald \\
+			\hline
+			Count of users & 570,349 & 358,165 \\
+			Sum of upvote & 29,206,680 & 23,966,048  \\
+			Mean of upvote & 116.29 & 164.40 \\
+			Std of upvote & 696.03 & 776.84 \\
+			\% of users contribute 80 \% upvotes & 6.26 \% & 7.97 \% \\
+			\hline\hline
+		\end{tabular}
+		\label{table:upvote}
+	\end{table}
+	As shown from~\Cref{table:upvote}, there are more users in \textit{politics}, almost twice the number of users in \textit{The\_Donald}. Correspondingly, the sum of the total upvotes is larger in \textit{politics}. However, the average upvote for each user in \textit{The\_Donald} is higher, which implies that users in \textit{The\_Donald} interact with each other more frequently. The standard deviation of upvotes in \textit{The\_Donald} is also larger than in \textit{politics}, which indicates that the users' upvote distribution in \textit{The\_Donald} is more sparse. Similarly, there are about 6.3\% of users in \textit{politics} and about 8\% users in \textit{The\_Donald} who contributes 80\% of total upvotes, which means about 6-8\% users dominating the commenting behaviour in each subreddit. This suggests that there are indeed some power users with high activity. The higher mean in \textit{The\_Donald} suggests that discussions are more interactive in \textit{politics}.
+	\subsection{User Comment Behavior}\label{sub:UserCommentBehavior}
+	In this Section we analyse the sentimental score distribution for users. There are some users who are active in both subreddits. Therefore we inspect their commenting behaviour in other subreddits, regarding subjectivity and sentiment.
+	\subsubsection{Results \& Implications}
+	After filtering out those too objective comments with the subjectivity cut value 0.4, we gather all the comments sentimental score in each subreddit and plot them as shown in Figure~\ref{fig:comment_04}. In order get a better comparison for the user commenting behaviour, we choose two other popular subreddits: \textit{AskReddit} and \textit{news}, which also include a large portion of the political subreddits mutual users. The x-axis represents the sentimental scores, ranging from -1 to 1, and the y-axis shows the total number of comments. Similarly, we derive another plot with the subjectivity cut value 0.6, shown below as Figure~\ref{fig:comment_06}. In Figure~\ref{fig:comment_04}, those lines are relatively smooth on the left part, however, there is a huge bump on Figure~\ref{fig:comment_06}. There is also a higher peak value in Figure~\ref{fig:comment_06} on the positive region, than in Figure~\ref{fig:comment_04}. This suggests that with the increase in subjectivity value, the comments become less neutral, having the tendency to become more negative or more positive. However, in both plots the red line shows relatively extreme commenting behaviour, indicating users in \textit{The\_Donald} tends to post more offensive or more positive comments.
+	\begin{table}
+		\caption{User Commenting Behaviour Statistics Comparison}
+		%    \vspace*{-15px}
+		\centering
+		\setlength{\tabcolsep}{5px}
+		\begin{tabular}{l | c | c | c | c }
+			\hline\hline
+			& The\_donald & politics & AskReddit & news\\
+			\hline
+			Subjectivity $>$ 0.4 &  &  &  \\
+			count & 63411  &  60572  & 31759  &  18864 \\
+			mean  & 0.081  &  0.076  & 0.083  &  0.051 \\
+			std   & 0.387  &   0.329 &  0.352 &   0.313 \\
+			25\%  & -0.164 & -0.100  & -0.118 &  -0.122 \\
+			75\%  & 0.344  & 0.274   & 0.300  &  0.250 \\
+			\hline
+			Subjectivity $>$ 0.6 &  &  &  \\
+			count &  32050 &  27121  & 15143  & 7928 \\
+			mean  &  0.052 &  0.046  & 0.053  & 0.010 \\
+			std   &  0.462 &  0.406  & 0.430  & 0.387 \\
+			25\%  & -0.267 & -0.212  & -0.225 & -0.225 \\
+			75\%  & 0.390  & 0.333   & 0.350  & 0.262 \\
+			\hline\hline
+		\end{tabular}
+		\label{table:comment}
+	\end{table}
+	The different commenting behaviour is presented from the statistical overview in~\Cref{table:comment}. First, we observe that users with subjectivity above the threshold post most comments in \textit{The\_Donald}. Therefore the user comment sentimental score in \textit{The\_Donald} also has the largest standard deviation, and inclines to have more negative and more positive scores regarding the first quartile value and third quartile value respectively. With the increase of the subjectivity value, and by filtering out more objective comments, we observe that the standard deviation becomes larger and first quartile value and third quartile becomes more negative and more positive respectively.
+	
+	\subsection{Summary}\label{sub:UserAnalysis_conclusion}
+	Through user behaviour analysis, we can observe a list of power users in each subreddit and find out that about 6-8\% of users dominating the comments upvote behaviour. Those users in \textit{The\_Donald} tend to post more aggressive comments. Besides, we notice that those mutual authors have varied posting behaviour in diverse subreddits, in addition, there are differences in keywords sentimental behaviour cross various subreddits.
+	
+	
+	\section{Time Analysis}\label{sec:TimeAnalysis}
+	
+	Additionally we analyse whether there are significant differences between temporal behaviour of different political orientations. To this end, we analyse temporal behaviour of different users. We use the field \texttt{created\_utc} (Coordinated Universal Time) as timestamp.
+	
+	%We will compare the average posting behaviour of \textit{politics} users to those of a \textit{The\_Donald} user, and compare these two against the general user base.
+	First, we analyse the general activity on both boards and observe whether we can identify differences.
+	
+	We also have a look into a user session, which are the posts of a user which happen with no more than 1 hour difference, to see if there are any specific orders in which the user decides to post. In order to do this, we collect the timestamps, subreddit names of a user and give them a session identifier i.e. a number starting at 1. If the next post by this user is within a period of one hour, it belongs to the same session. Otherwise it is the start of a new session.
+	
+	Furthermore we analyse whether peaks in overall activity on the respective subreddits are correlated to certain events that occured in a similar time frame. For that we analyse the overall activity of the boards over the months and identify peaks and lookup events that happened roughly in the same timespan in the news. We continue to see, if there are patterns between certain reoccurring events and peaks in activity.
+	
+	\subsection{General Activity}
+	In the first step to this, we extract all users which are active on \boards{and} and save them to a file, for easier access. Then we extract all timestamps (\texttt{created\_utc}) related to these users and both subreddits, and resample them into \textit{hours}, \textit{days}, \textit{weeks}, and \textit{months}. The remainder of the anomaly analysis focuses on the daily sampling, because it is not too coarse but also not to detailed, such that its possible to have a good overview over differences. For the general activity we look at different kinds of activity: Amount of comments posted: by users, in a subreddit, per hour, per day, per week, and per month.
+	\begin{table}
+		\caption{General Activity: Across all subreddits, complete time-frame}
+		\centering
+		\setlength{\tabcolsep}{5px}
+		\begin{tabular}{lccccc}
+			\hline\hline
+			Comments  & Min & Max & Mean & Std Dev\\
+			\hline
+			by author & 1 & 73843110 & 532.805 & 84653.19 \\
+			in subreddit & 1 & 27705040 & 1861.384 & 98806.78 \\
+			by hour & 267 & 97447 & 37521.76 & 14070.59 \\
+			by day & 606819 & 1578528 & 900522.18 & 110459.64 \\
+			by week & 2796798 & 7836740 & 6221789.58 & 706254.13 \\
+			by month & 961460 & 31018069 & 25664882.00 & 6687706.49 \\
+			\hline\hline
+		\end{tabular}
+		\label{table:general_stats}
+	\end{table}
+	\subsubsection{Results \& Implications}
+	In Table~\ref{table:general_stats} one can see the min, max, mean, and standard deviation of each of the categories. Notable results are e.g. the maximum value for comments by author. This high value is given due to the fact, that deleted posts get marked ``[deleted]" in the author-field, such that this value represents the amount of deleted posts. The mean indicates that most users have posted fewer comments in the observed time. Its noteworthy that the mean values for hour/day/week/month relate to each other roughly like hour/day/week/month relate to each other. The mean amount of posts per day are around 24-times the amount per hour, the mean of posts per week is around 7-times the amount per day, and the mean of posts per month is roughly 4-times the amount per week.
+	
+	This suggests that overall the activity on the website does not behave significantly abnormal. As visible in Figure~\ref{fig:byhour},~\ref{fig:byday}, and~\ref{fig:bymonth} that there is a increasing trend, especially for \textit{The\_Donald}, where there was almost no activity in the first month. Future work includes more recent content. Also additionally to the comments, analysing submissions is of further interest.
+	\subsection{User Sessions}
+	In order to compute the user sessions to perform a comparison, we extract the political users again, and remove mutual users from both sets, such that we only have exclusively the users from each subreddit, who do not post on the respective other board. For each of these sets, we collect all their activity on the whole website and subdivide it into sessions. A session consists of all consecutive posts which happen with no greater time difference than 3600 seconds. For every of these sessions, for every user we then compute the total amount of sessions of that particular user, the amount of comments for each session, and the duration in seconds. We remove all sessions with only one comment, because this indicates that the user has not been active more than once within 1 hours. The respective duration of that session, which is zero, is also not included in the statistics.
+	\subsubsection{Results \& Implications}
+	For the user sessions we compute the mean and the standard deviation of the amount of sessions per user, comments per session and duration of the session for exclusive \boards{and} users in Table~\ref{table:session_stats}.
+	\begin{table}
+		\caption{Session Statistics: \textit{politics} vs. \textit{The\_Donald}}
+		% hacky but works
+		%	\vspace*{-15px}
+		\centering
+		\setlength{\tabcolsep}{5px}
+		\begin{tabular}{lccccc}
+			\hline\hline
+			                        &  Mean  & Std Dev &  & Mean  & Std Dev \\ \hline
+			Sessions per User       & 192.44 & 280.09  &  & 9.787 & 40.659  \\
+			Comments per Session    & 81.850 & 154.42  &  & 9.850 & 35.919  \\
+			Duration of Session (s) & 81.837 & 154.40  &  & 9.854 & 35.930  \\ \hline\hline
+		\end{tabular}
+		\label{table:session_stats}
+	\end{table}
+	Its noteworthy, that the data available in Table~\ref{table:session_stats} for \textit{politics} is inherently larger than \textit{The\_Donald}, which makes it hard to compare them. Nevertheless its visible that the standard deviation is much higher relative to the mean for \textit{The\_Donald}. Its around four times more compared to \textit{politics}, where its only up to around two times as high.
+	
+	This could be an indication to that exclusive \textit{The\_Donald} users, are less active than their counterparts. Its interesting to find, that the duration of a session in seconds is very close to the amount of comments per session, which suggests that on average comments are rather short replies which could be done within a second. Further work includes testing several session duration ranges, including information about human attention span.
+	\subsection{Activity Anomaly}
+	To identify anomalies in commenting activity, we manually look for peaks in the activity representation mentioned above. We decide for a cut-off at 100K comments per day, which is high enough to eliminate noise, but also low enough to identify multiple peaks which are high enough. For each of these peaks, we look up the dates at the website \texttt{archive.org} with the search term "US". This returns multiple results, some entries of the website have higher amounts of views compared to others. Using this information we try to find political events happening within a one-day-tolerance of the peaks.
+	\subsubsection{Results \& Implications} When analysing the daily subreddit activity we find notable peaks, which reach far over 100K comments per day as seen in Figure~\ref{fig:byday}. A closer look at these specific peaks reveals that they are always tied to a major political event in the US, which are the Democratic National Convention (DNC) in Figure~\ref{fig:dnc}, the three dates of presidential debate in Figure~\ref{fig:debate}, the night of the presidential election in Figure~\ref{fig:election}, and the inauguration of Donald Trump as the president of the US (and other, rather minor events) in Figure~\ref{fig:inaug}.
+	
+	The most likely cause for these peaks is a increase in overall activity when certain events happen. In those events users do voice their opinion or provide further information they might have gathered. This analysis can be extended to compare, if for all subreddits relevant events cause increase activity. Or, whether this is a purely political phenomenon.
+	\section{Prediction of Political Orientation}
+	In this Section we try to predict the political orientation using the most frequently used words on both subreddits as a feature. For a user we want to predict his orientation, based on one of the two main subreddits, \boards{and}. In order to prepare for this, we extract the whole text-body of both political subreddits and identify the top 100 most used words. We then choose those 100 words as our features, such that every comment-body is represented by a vector $v\in\mathbb{R}^{100}$, where each entry is the amount of times that specific feature-word is used in the comment-body. If the comment is posted in \textit{politics} we assign it the label $+1$ and if it is commented in \textit{The\_Donald} we assign $-1$. We repeat this for every comment in both boards. Afterwards we select the first half of the comment body (due to limitations in RAM) and split the set 70/30 into training and testing. For the training we perform Logistic-Regression~\cite{scikit-learn} with 10-fold cross validation with a 70/30 training/validation split and 10 different values for the hyper-parameters, which results in 100 runs for fitting. Afterwards we use the remaining test-set, which was not seen by the model before and compute the accuracy of the model.
+	\subsubsection{Results \& Implications}
+	Lastly this part contains the results of the prediction of political orientation using most frequently used words. The total amount of all positive labels is $25535696$, the total amount of negative labels is $16108468$ (1.6:1 ratio). Before attempting any sophisticated prediction, we try simple Logistic-Regression~\cite{scikit-learn}, and achieve a precision of $96$\%. This was most likely due to overfitting to the data. Therefore we apply cross-fold-validation together with different hyper-parameter values, after which the accuracy of the prediction drops to about $90$\%. This might suggest that the models generalization improves, and is less likely to overfit. The advantage of Logistic-Regression is that each of the features is assigned a weight, such that we evaluate the importance of each of feature-words in this context. Figure~\ref{fig:pred} shows the plot of each of the words including their respective weight. The red arrows indicate words of interest, which are (from left to right): 'She', 'Clinton', 'Vote', 'I', 'Trump', 'Hillary', 'I'm', 'He'. This suggests that some words are more likely to be used on one side of the political spectrum, than on the other.
+	
+	To further improve these results it is viable to put more effort into choosing the feature words, e.g. only consider nouns and use more advanced methods for prediction, e.g. neuronal networks.
+	\section{Discussion \& Limitations}
+	This Section discusses the results of our analysis and present the limitations thereof.
+	\subsection{Cross Subreddit Analysis}
+	A problem in the Cross Subreddit Analysis is the group of mutual users. It's hard to tell whether \boards{or} are more or less isolated.
+	If we knew whether the average user of the mutual group leans towards one of the two political orientations, we could better explain which of the both groups' users
+	post more in the respective other subreddit and which user base prefers to stay isolated.
+	In addition, it would be interesting to see what kind of comments the user groups post in other subreddits.
+	One could then see whether they are influencing reddit on a political basis or whether they stay neutral
+	in other subreddits.
+	\subsection{Language Analysis}\label{sub:LanguageDiscussion}
+	Sanitizing content took a lot of work, which has not yet be done by other groups for reddit. This strained results presented in here.
+	The phrased keywords would be interesting to analyse over several time in their change and with regard to combinations of words they are used. The political narrative of Trump's presidency is reflected in the used words, whereas it is vaguely for \textit{politics}.
+	Differences in Obama's presidency and in other campaigns and their success with computing influence of wordings to success would be of interest.\par
+	The link analysis leaves certain hypotheses to analyse for \textit{The\_Donald}: 1. Right-leaning commenters on reddit are more interested in ideology and less in facts, 2. Right-leaning posts could be of higher quality and good sources, 3. Homogeneity of user base for right-leaning commenters is higher with regard to the topics, 4. \textit{The\_Donald} commenters are more inhomogeneous ("imposters", "angry folks",\ldots), 5. More consumer-oriented posts with fewer debate intention and linking.
+	For \textit{politics} the opposite hypotheses may be true.% and this leaves room for much further analysis.\par
+	%count of links is relatively low and should be compared to other forums
+	%some way to define when opinions differ from initial post would be great to check if this has certain influence on the link behavior
+	%reddits algorithm for showing good quality commments etc may also have big impact on this (searching for good sources takes alot time)
+	%RIGHT USERS
+	%1. hypothesis for the high share of left websites and few fact websites is, that right-leaning commenters on reddit are more insterested
+	%in ideology and less facts, which may also be result of lower count of links
+	%2. hypothesis could be the higher quality of good linked initial post
+	%3. hypothesis homogenity of user base (which do not need to reason about different opinion to the initial post)
+	%4. hypothesis more inhomogenious group of people who at least link (imposter right-wing people aka "angry folks") ?
+	%5. hypothesis messaging more directly with statements, more time efficient and consumer oriented (less thinking)
+	%LEFT USERS
+	%1. hypothesis more fact-oriented when reasonining, less interested in other ideology
+	%2. hypothesis lower quality or poorly linked initial post
+	%3. hypothesis less homogenuous user base (need for reasoning about different opinions from initial post)
+	%4. hypothesis mroe homogenious group of people who at least link (no or few imposter left-wing people)
+	%5. hypothesis messaging more indirectly by thinking, less time efficient and prosumer oriented (more thinking)
+	\subsection{User Behavior Analysis}
+	There was a problem when analyzing comment semantics because there are plenty of available libraries, however, we have no idea about identifying which library is the most reliable. Since we only adopt one popular text processing library to conduct all semantic analysis, more experiments are still remained to be done by alternatives. Besides, though observed evidence that users behave differently in various subreddits, it is still an open question to identify how a user gradually change their posting behaviour, e.g. posting frequency, comment length, comment semantics, and etc.
+	There do exist better approaches like for identification of irony~\cite{Chenlo2013}, but we wanted to keep things simple.
+	%Allusions to certain events in time are another open issue.
+	\subsection{Temporal Analysis}
+	When attempting to analyse temporal behaviour an issue that occurs are bots, which are highly active and thus should be excluded from analysis. The large difference in user-base for the analysed time also poses an issue, when trying to compare activity on both political spectrums, as one side is not represented strongly enough. Also there are certain rules that apply on each of the subreddits which might influence certain aspects of activity or use of words. This might cause some artificial differences/similarities, which do not exists naturally. Further work includes more data and maybe analysis of different social networks besides reddit.
+	\subsection{Prediction of Political Orientation}
+	Using the most frequent words to predict the political orientation poses the issue, that certain commonly used words need to be filtered out, e.g. ``and", ``or", ``to", ``in", ``the". This will likely provide better results, as these words are frequently used across all political orientations. Another issue is the ground truth selection: There is a lot of content from mutual users, shown in~\Cref{sec:CrossSubredditAnalysis}, which should be filtered out in order to get a higher contrast between the political groups.
+	Also the number of text-bodies available from \textit{The\_Donald} is $60\%$ of the number of text-bodies of \textit{politics}, which could cause a bias as simply always guessing $+1$ gives an accuracy of $60\%$. Other future work includes adjusting the training data such that the amount of positive and negative examples would be the same.
+	
+	\section{Conclusion}
+	This Section briefly summarizes the implications of the other sections.\par
+	\boards{and} users are more active than average reddit users and on average \textit{politics} users are even more active than \textit{The\_Donald} users. However the standard deviation of comments in \textit{politics} compared to \textit{The\_Donald} is very high and thus \textit{The\_Donald} users tend to post far more consistent. 
+	High active users on \boards{and} have only few comments in the respective other board. 
+	Thus the discussion in both boards is very isolated from another. 
+	The top 7 subreddits by amount of political users(being \boards{or}) aside from \textit{politics} are conservative. This may indicate better international connection by many European users or concern about European politics. Slightly more users seem to be left-leaning on reddit. The left- and right-leaning of the boards reflects also in the amount of users being in other boards by topic.
+	\par
+	The controversial character of Trump is reflected in the frequency of his mentions in both boards. Trump's campaign narrative \texttt{fake, news}, as being anti- establishment, is reflected in the wording, whereas in \textit{politics} no such keywords occur in that frequency. For reddit linking on left websites indicates no political bias, whereas linking to neutral news websites indicates being more liberal. Linking to right websites indicates being more conservative.
+	Further investigation is needed to derive more information.
+	\par
+	Discussions in \textit{The\_Donald} have on average more upvotes. Only 6-8\% in \textit{The\_Donald} and \textit{politics} users are responsible for 80\% of total upvotes. This indicates a small share of highly active users.
+	\textit{The\_Donald} users tend to post more polarized comments, meaning to be more affirmative or negative, on higher subjective comments. The keywords \textit{Trump} is more uniformly positive to the positive end, whereas \textit{Hillary} has more only slightly affirmative comments for high subjective comments.
+	Therefore \textit{Trump} is more supported in \textit{The\_Donald} than \textit{Hillary} in \textit{politics} on reddit.
+	\par
+	The overall activity on the website \textit{reddit} did not behave abnormal in the chosen time frame of the data set. 
+	Most comments are rather short replies, which indicates creation time of few seconds. 
+	The temporal analysis showed that there is correlation between activity and political events. Further work is needed in order to derive more definitive information from user sessions.
+	\par
+	Regarding political orientation, our results suggest that its possible to predict political orientation using frequently used words. More work can be put into sophisticated classifiers and improved feature selection.
+	%\textit{politics} users use rarely right-leaning news websites only referencing more neutral or left-leaning news. Almost 2/3 of websites are left-leaning and the rest is roughly neutral.
+	%\textit{The\_Donald} users only have 13.5\% of the roughly 57500 website links, from which rarely neutral websites are linked.
+	%Left- and right-leaning news websites are linked in roughly the same amount.\par
+	
+	% prevents nocite errors
+	\nocite{*}
+	\bibliography{literature}
+	\bibliographystyle{IEEEtran}
+	
+
+\end{document}
