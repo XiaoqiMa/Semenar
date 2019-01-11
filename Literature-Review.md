@@ -261,4 +261,57 @@ The best machine learning classifier that was based on character-level convoluti
 
   - ![image-20190105221535282](/Users/xiaoqi/Library/Application Support/typora-user-images/image-20190105221535282.png)
 
+#### 16. Minimalistic CNN-based ensemble model for gender prediction from face images
+
+- ![image-20190106152657084](/Users/xiaoqi/Library/Application Support/typora-user-images/image-20190106152657084.png)
+
+- Conclusion: designed a CNN-based ensemble model for gender recognition from face images
+  - the record performance of 97.31% on LFW dataset has been set using the ensemble of 3 CNNs
+
+#### Contextual Features Related Works
+
+| Author & Year            | Features          | Methods                            | Performance(F1) |
+| ------------------------ | ----------------- | ---------------------------------- | --------------- |
+| E.Vasilev 2018           | Reddit Comments   | BOW, Glove, CNN                    | 82.3%           |
+| D. Rao et al., 2010      | Tweets            | Sociolinguistics, N-gram           | 72.3%           |
+| W. Deitrick et al., 2012 | Emails            | Neural Network                     | 95%             |
+| F. Karimi et al., 2016   | Names(face image) | Combine name/image-based detection | 82%(92%)        |
+|                          |                   |                                    |                 |
+
+
+
+#### Visual Features Related Works
+
+| Author & Year           | Features              | Methods      | Performance(F1) |
+| ----------------------- | --------------------- | ------------ | --------------- |
+| M. Merler et al., 2015  | Social media images   | SVM          | 75.6%           |
+| Q. You et al., 2014     | Social network images | Stacked-SVM  | 72%             |
+| G. Antipov et al., 2016 | Face images           | Ensemble CNN | 97%             |
+|                         |                       |              |                 |
+|                         |                       |              |                 |
+|                         |                       |              |                 |
+
+
+
+#### Behavioral Features Related Works
+
+| Author & Year             | Features                      | Methods                       | Performance(F1) |
+| ------------------------- | ----------------------------- | ----------------------------- | --------------- |
+| Hu, et al., 2007          | Webpage click-through data    | Bayesian Framework            | 80%             |
+| Zhong et al., 2015        | Location check-ins            | Tensor Factorization          | 81%             |
+| B. Bi et al., 2013        | Facebook likes/Search queries | Common Representation via ODP | 80%             |
+| T. M. Phuong et al., 2014 | Web browsing history          | SVM, LDA, N-gram              | 81%             |
+| D. Duong et al., 2016     | E-commerce data               | Random Forest                 | 81.4%           |
+|                           |                               |                               |                 |
+
+
+
+| Features             | Example              | #female/#male |
+| -------------------- | -------------------- | ------------- |
+| Emotions             | ":)", ":D", ";)"     | 3.5           |
+| Elipses              | "...."               | 1.5           |
+| Character repetition | "niceeeee, no waaay" | 1.4           |
+| Repeated exclamation | "!!!!"               | 2.0           |
+| Puzzled punctuation  | "!?!!??!"            | 1.8           |
+| OMG                  | "Oh My God"          | 4.0           |
 
