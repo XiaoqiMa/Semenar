@@ -1,7 +1,8 @@
 
 \documentclass[runningheads]{llncs}
 \usepackage{graphicx}
-
+\usepackage{hyperref}
+\usepackage{csquotes}
 
 \begin{document}
 
@@ -25,7 +26,7 @@
 	
 	It comes as no surprise that personalization could be based on historical data, e.g. previous browsing history or shopping records, which, nonetheless, requires users have registered in the web application and have used it before \cite{duong2016customer}. But for new users or guest users, the historical-data driven approach is not applicable since there is no prior knowledge. For those who are newcomers to the system, demographic attributes could be explored to offer personalized services. Demographic attributes could be age, gender, education level and etc, and gender is treated as a striking feature to represent user’s characteristic among them, which is also the attribute that needs to be further investigated in this seminar paper. However, nowadays users are reluctant to expose their personal information due to privacy concerns as well as the law constrains the leak of sensitive user information on social media platforms \cite{zheleva2009join}. Due to the privacy protection on the web, it is not feasible to obtain user gender information directly, therefore, predicting user gender on the web naturally becomes an achievable alternative way, which is an interesting topic that considerable research efforts have been devoted to \cite{phuong2014gender}. \\
 	
-	On the web, there are multiple features could be employed to improve gender prediction accuracy. During the literature review, three dominating research method groups are discovered. One method group focuses on contextual data written by users, such as blogs, movie reviews, website comments and tweets.  In a sense, sentimental analysis and stylometry identification could be cast on those textual data, in order to generate key features to detect gender on the web \cite{phuong2014gender}. The second method group concentrates on visual data. Features adopted to predict gender could be extracted from face image or images posted on social media by interpreting the semantics of the images \cite{merler2015you}. The method group that using users’ behavioral data to detect gender is also demonstrated in a number of studies. The behavioral data includes but not limited to web browsing history, web search queries and user clickstream data \cite{hu2007demographic}. With regard to increase gender prediction accuracy, a specific feature or some feature combinations should be figured out to best distinguish female users from male users, which is exactly the main topic to be investigated in this seminar paper. \\
+	On the web, there are multiple features could be employed to improve gender prediction accuracy. During the literature review, three dominating research method groups are discovered. One method group focuses on contextual data written by users, such as blogs, movie reviews, website comments and tweets.  In a sense, sentimental analysis and stylometry identification could be cast on those textual data, in order to generate key features to detect gender on the web \cite{phuong2014gender}. The second method group concentrates on visual data. Features adopted to predict gender could be derived from face image or images posted on social media by interpreting the semantics of the images \cite{merler2015you}. The method group that using users’ behavioral data to detect gender is also demonstrated in a number of studies. The behavioral data includes but not limited to web browsing history, web search queries and user clickstream data \cite{hu2007demographic}. With regard to increase gender prediction accuracy, a specific feature or some feature combinations should be figured out to best distinguish female users from male users, which is exactly the main topic to be investigated in this seminar paper. \\
 	
 	In the following, related work review will be described in chapter 2. Chapter 3 characterizes several existing state-of-art methods in each method group respectively, followed by chapter 4, revealing the corresponding experimental results. In chapter 5, a short summary will be covered as well as some implications for future work. 
 
@@ -36,7 +37,7 @@
 	
 	\subsection{Contextual features}
 	
-	Linguistics differences, especially writing style or speaking style, lie between female and male users. To be specific, character usage, writing syntax, functional words and word frequency could be regarded as linguistics features \cite{deitrick2012author} and previous studies have already shown those distinctions. Deitrick \cite{deitrick2012author} found out from emails that females favor emotionally language and incline to use more adjectives and adverbs, while males make more typos and commit more grammatical errors. Similarly, after investigating tweets by utilizing sociolinguistic-based model and N-gram feature model, Rao \textit{et al}. \cite{rao2010classifying} drew the conclusion that females tend to use more emoticons, ellipses as well as repeated exclamation. In addition, features extracted from blogs text facilitated to identify gender from weblogs, which have been studied by Herring \textit{et al}. \cite{herring2004bridging}, and Yan \textit{et al}. \cite{yan2006gender}. Prior research also implied that names could be employed as the key feature to predict gender. Mislove \textit{et al}. \cite{mislove2011understanding} mapped those self-reported names of Twitter users to a name database reported by the U.S. Social Security Administration in order to detect gender.  In \cite{karimi2016inferring}, authors first evaluated several widely accepted name-based gender detection methods, then proposed a mixed method that combine name-based features with image-based features. Apart from textual data, word usage features extracted from conversational data were considered  to predict gender for individual speakers \cite{gillick2010can}. 
+	Linguistics differences, especially writing style or speaking style, lie between female and male users. To be specific, character usage, writing syntax, functional words and word frequency could be regarded as linguistics features \cite{deitrick2012author} and previous studies have already shown those distinctions. Deitrick \cite{deitrick2012author} found out from emails that females favor emotionally language and incline to use more adjectives and adverbs, while males make more typos and commit more grammatical errors. Similarly, after investigating tweets by utilizing sociolinguistic-based model and N-gram feature model, Rao \textit{et al}. \cite{rao2010classifying} drew the conclusion that females tend to use more emoticons, ellipses as well as repeated exclamation. In addition, features derived from blogs text facilitated to identify gender from weblogs, which have been studied by Herring \textit{et al}. \cite{herring2004bridging}, and Yan \textit{et al}. \cite{yan2006gender}. Prior research also implied that names could be employed as the key feature to predict gender. Mislove \textit{et al}. \cite{mislove2011understanding} mapped those self-reported names of Twitter users to a name database reported by the U.S. Social Security Administration in order to detect gender.  In \cite{karimi2016inferring}, authors first evaluated several widely accepted name-based gender detection methods, then proposed a mixed method that combine name-based features with image-based features. Apart from textual data, word usage features extracted from conversational data were considered  to predict gender for individual speakers \cite{gillick2010can}. 
 	
 	\subsection{Visual Features}
 	
@@ -49,44 +50,157 @@
 	
 	\section{Methods}
 	
-	\section{Results \& Discussion}
+	The main topic of this seminar paper is how to precisely classify user gender on the web. After literature review, we have found three dominating method groups to approach the topic, by exploring contextual features, visual features and behavioral features respectively. Nevertheless, it is not achievable to simply compare model metrics (accuracy, F1 score and etc. ) obtained from the model evaluation based on features from each method group by reason of the diverse data applied for training. Therefore, the techniques exploited to predict gender on the web are introduced separately for each method group in the following. 
 	
+	\subsection{Contextual features model (N-gram/Sociolinguistic model)}
+	
+	As previously discussed, the contextual data such as tweets, blogs, movie reviews, could be utilized to train a gender classifier. Twitter, one of the most popular social networking forums, naturally becomes a great source for researchers to investigate on. And recent developments of referring gender from tweets have attracted much attention. One novel method to detect gender of Twitter users was proposed by Rao et al. \cite{rao2010classifying}, which introduced stacked-SVM-based classification algorithms over a vast of features gleaned from Sociolinguistic model and N-gram model. 
+	Though predicting gender from their first names had high accuracy as described in \cite{karimi2016inferring}, many twitter users tend not to use their real names, causing difficulty in distinguishing those true names. As a result, only the message content of the tweets or reply for the tweets of Twitter users were crawled and manually annotated by two independent annotators, served as the training datasets.  \\
+	
+	In \cite{jinyu2014study}, it has concluded that people will have their own gender characteristics while using the language either from physiology or psychology, causing the sociolinguistics differences, which facilitates to detect gender. In this case, the utterance-choosing differences could be treated as features, including vocabulary difference, syntactic difference and etc. As displayed in Table \ref{table:linguistic-feature}, some sociolinguistic features had been acquired from tweets messages. Then a SVM \cite{suykens1999least}based binary classifier was built based on these sociolinguistic features \cite{rao2010classifying}. Besides, N-gram language model is widely used to analyze texts, which was also included in the paper. First, the authors preprocessed on texts, like digits normalization, text lowercase, tokenization, emoticons and specific punctuation preservation, to produce unigrams and bigrams. Then they brought out a SVM-based classification model employing unigrams and bigrams. Finally, the best performing classification model discovered was to use stacked-SVM to combine predictions from Sociolinguistic and N-gram models accompany with their prediction weights  \cite{rao2010classifying}.
+	
+		\begin{table}
+		\caption{List of Sociolinguistic features  \cite{rao2010classifying}}
+		\begin{tabular}{| l | c |}
+			\hline
+			\textit{Feature} & \textit{Examples} \\
+			\hline
+			Simleys & A list of emoticons compiled from the Wikipedia\\
+			OMG & Abbreviation for \enquote{Oh My God}  \\
+			Ellipses &  \enquote{....}\\
+			Possesive bigrams & my\_XXX, our\_XXX \\
+			Repeated alphabets & niceeee, noooo waaaay \\
+			Laugh & LOL, ROTFL, haha \\
+			Exasperation & Uhg, mmmm, hmmm, ahh \\
+			Agreement & yea, yeah, ohya \\
+			Honorifics &  dude, man, bro\\
+			Excitement &  A string of exclamation symbols (!!!!)\\
+			Pulzzled Punct &  A combination of any number of ? and ! (!??!!)\\
+			\hline
+		\end{tabular}
+		\label{table:linguistic-feature}
+	\end{table}
+	
+	\section{Results \& Discussion}
+	In this section, experiments were conducted to evaluate the performance of methods stated in previous section respectively. Various experiment results and evaluation metrics were exposed in the following. 
+	
+	\subsection{Results for Contextual features model (N-gram/Sociolinguistic model)}
+	It needs to be mentioned that partial results are directly borrowed from the original paper \cite{rao2010classifying}, and reorganized in the below. In Table \ref{table:text_results}, we could fount that stacked-SVM method which combined both sociolinguistic feature and N-gram feature outperformed the other two, achieving 72.33\% accuracy. Also from Table  \ref{table:frequency}, it could be simply acknowledged that female tended to use emoticons, ellipses more often. In addition, females were prone to use OMG four times more than males. And males were less possible to use repeated character and exclamation in tweets.  
+	\\
+	Besides, an overview of performance measurement on contextual-features based classification model is listed in Table \ref{table:contextual_work}. 
+	
+	\begin{table}[!htb]
+		%	\caption{Global caption}
+		\begin{minipage}{.5\linewidth}
+			\caption{Gender detection results \cite{rao2010classifying}}
+			\centering
+			\begin{tabular}{| l | c |}
+				\hline
+				\textit{Model} & \textit{Accuracy} \\
+				\hline
+				Sociolinguistic & 71.76\\
+				N-gram &  68.70\\
+				Stacked-SVM & 72.33 \\
+				Prior & 50.00 \\
+				\hline
+			\end{tabular}
+			\label{table:text_results}
+		\end{minipage}%
+		\begin{minipage}{.5\linewidth}
+			\centering
+			\caption{Sociolinguistic features expressed as relative frequency of females and males \cite{rao2010classifying}}
+			\begin{tabular}{| l | c | c |}
+				\hline
+				Features &  Example & \#female/\#male\\
+				\hline
+				Emoticons &  :), :D & 3.5\\
+				Ellipses &  ....  & 1.5\\
+				Character repetition & nooo waaay & 1.4\\
+				Repeated exclamation & !!!!  &  2.0 \\
+				Puzzled punctuation & !?!!??! & 1.8\\
+				OMG & Oh My God & 4.0\\
+				\hline
+			\end{tabular}
+			\label{table:frequency}
+		\end{minipage} 
+	\end{table}
+
+	\begin{table}
+		\caption{Contextual Feature based related work }
+		\begin{tabular}{| l | l | l | c | }
+			\hline
+			Author  &  Data  & Methods & Performance(F1)\\
+			\hline
+			E.Vasilev \cite{Vasilev:Thesis:2018} &  Reddit Comments & BOW, Glove, CNN& 82.3\%\\
+			D. Rao et al., \cite{rao2010classifying} &  Tweets  & Sociolinguistics-features, N-gram-features & 72.3\%\\
+			W. Deitrick et al., \cite{deitrick2012author} & Emails & Neural Networks & 95\%\\
+			F. Karimi et al., \cite{karimi2016inferring} & Names and face Images  & Combine Name/Image based detection &  92\%\\
+			\hline
+		\end{tabular}
+		\label{table:contextual_work}
+	\end{table}
+
+
 	\section{Implications}
 	
-	\begin{table}
-		\caption{Table captions should be placed above the
-			tables.}\label{tab1}
-		\begin{tabular}{|l|l|l|}
-			\hline
-			Heading level &  Example & Font size and style\\
-			\hline
-			Title (centered) &  {\Large\bfseries Lecture Notes} & 14 point, bold\\
-			1st-level heading &  {\large\bfseries 1 Introduction} & 12 point, bold\\
-			2nd-level heading & {\bfseries 2.1 Printing Area} & 10 point, bold\\
-			3rd-level heading & {\bfseries Run-in Heading in Bold.} Text follows & 10 point, bold\\
-			4th-level heading & {\itshape Lowest Level Heading.} Text follows & 10 point, italic\\
-			\hline
-		\end{tabular}
-	\end{table}
+%	\begin{table}[!htb]
+%		\begin{subtable}{.5\linewidth}
+%		\centering
+%		\caption{Gender detection results \cite{rao2010classifying}}
+%		\begin{tabular}{| c | c |}
+%			\hline
+%			\textit{Model} & \textit{Accuracy} \\
+%			\hline
+%			Sociolinguistic & 71.76\\
+%			N-gram &  68.70\\
+%			Stacked-SVM & 72.33 \\
+%			Prior & 50.00 \\
+%			\hline
+%		\end{tabular}
+%		\label{table:text_results}
+%	\end{subtable}%
+%	
+%	\begin{subtable}{.5\linewidth}
+%	\centering
+%		\caption{Sociolinguistic-based features for Gender expressed as relative frequency of females and males \cite{rao2010classifying}}
+%	\begin{tabular}{| l | c | c |}
+%		\hline
+%		Features &  Example & \#female/\#male\\
+%		\hline
+%		Emoticons &  :), :D & 3.5\\
+%		Ellipses &  ....  & 1.5\\
+%		Character repetition & nooo waaay & 1.4\\
+%		Repeated exclamation & !!!!  &  2.0 \\
+%		Puzzled punctuation & !?!!??! & 1.8\\
+%		OMG & Oh My God & 4.0\\
+%		\hline
+%	\end{tabular}
+%	\label{table:frequency}
+%\end{subtable}
+%	\end{table}
+
+%	\begin{table}
+%		\caption{Sociolinguistic-based features for Gender expressed as relative frequency of females and males \cite{rao2010classifying}}
+%		\begin{tabular}{| l | c | c |}
+%			\hline
+%			Features &  Example & \#female/\#male\\
+%			\hline
+%			Emoticons &  :), :D & 3.5\\
+%			Ellipses &  ....  & 1.5\\
+%			Character repetition & nooo waaay & 1.4\\
+%			Repeated exclamation & !!!!  &  2.0 \\
+%			Puzzled punctuation & !?!!??! & 1.8\\
+%			OMG & Oh My God & 4.0\\
+%			\hline
+%		\end{tabular}
+%		\label{table:frequency}
+%	\end{table}
+%	
 	
-	\begin{table}
-		\begin{tabular}{|l|l|l|}
-			\hline
-			Features &  Example & \#female/\#male\\
-			\hline
-			Emotions &  :), :D & 3.5\\
-			Elipses &  ....  & 1.5\\
-			Character repetition & niceee, no waaay & 1.4\\
-			Repeated exclamation & !!!!  &  2.0 \\
-			Puzzled punctuation & !?!!??! & 1.8\\
-			OMG & Oh My God & 4.0\\
-			\hline
-		\end{tabular}
-	\end{table}
 
 
 	% prevents nocite errors
-	\nocite{*}
+%	\nocite{*}
 	\bibliography{literature}
 	\bibliographystyle{IEEEtran}
 	
