@@ -18,7 +18,7 @@
 	
 	\begin{abstract}
 		
-		Historical data and user demographic information are essential in personalized web applications. However, for new users, there is no historical data and it is infeasible to directly obtain personal information from users due to privacy concerns. Thus, the ability to predict user demographics, particularly gender, plays a vital role. After literature reviews, we conclude three main method groups which exploit textual features, visual features and behavioral features respectively. Gender classification could be trained on textual features based on the fact that females and males have huge differences in linguistic writing styles. And the face image as well as the semantic meaning in images could be utilized to detect gender. For behavioral features, such as web browsing history, web search queries, and e-commerce data, they could be explored to build a gender predictor and it has been an active research topic on this type of features. In this seminar paper, various methods and performance measurement for each method group will be discussed.
+		Historical data and user demographic information are essential in personalized web applications. However, for new users, there is no historical data and it is infeasible to directly obtain personal information from users due to privacy concerns. Thus, the ability to predict user demographics, particularly gender, plays a vital role. After literature reviews, we conclude three main method groups which exploit textual features, visual features, and behavioral features respectively. Gender classification could be trained on textual features based on the fact that females and males have huge differences in linguistic writing styles. And the face image as well as the semantic meaning in images could be utilized to detect gender. For behavioral features, such as web browsing history, web search queries, and e-commerce data, they could be explored to build a gender predictor and it has been an active research topic on this type of features. In this seminar paper, various methods using each type of feature will be discussed and the corresponding experiments were conducted on each method to evaluate the model performance. Finally, implications show that future study should be devoted to exploring more features or the combinations of different types of features. 
 		
 		\keywords{Gender detection  \and Textual  \and Visual \and Behavioral}
 	\end{abstract}
@@ -48,19 +48,19 @@
 	
 	\subsection{Behavioral features}
 	
-	Besides the methods relied on textual and visual features, it is noteworthy knowing that substantial researches have been conducted on behavioral features. And there are various behavioral features could be utilized, such as web-browsing history, web-search history, web clickstream data and etc. Hu \textit{et al}. focused on webpage click-through data to detect user\textquotesingle s demographics, including gender. First, Bayesian Framework was employed on webpage features which are content-based and categorical-based to obtain the gender tendency of web pages. Then authors assumed similar web browsing behaviors of users indicated similar gender tendency towards the web pages after smoothing approach preprocessing. In this case, they could simply build a gender classifier based on the web pages visited by users \cite{hu2007demographic}. T. M. Phuong \textit{et al}. followed a similar approach, they extracted topic-based features, time features and sequential features from web browsing history to train a stacked-SVM classifier to predict gender. One interesting finding was that males inclined to switch between different webpage categories more regularly \cite{phuong2014gender}. Other features based on their catalog viewing information on e-commerce system, such as shopping records, items viewed, and time of access, were adopted to train the gender classifier \cite{duong2016customer}. In paper \cite{bi2013inferring}, by mapping both Facebook likes data and Bing search queries to ODP(Open Directory Project), the coarse-grained common representation was able to build the gender predictor.
+	Besides the methods relied on textual and visual features, it is noteworthy knowing that substantial researches have been conducted on behavioral features. And there are various behavioral features could be utilized, such as web-browsing history, web-search history, web clickstream data and etc. Hu \textit{et al}. focused on webpage click-through data to detect user\textquotesingle s demographics, including gender. First, Bayesian Framework was employed on webpage features which are content-based and categorical-based to obtain the gender tendency of web pages. Then authors assumed similar web browsing behaviors of users indicated similar gender tendency towards the web pages after the smoothing approach preprocessing. In this case, they could simply build a gender classifier based on the web pages visited by users \cite{hu2007demographic}. T. M. Phuong \textit{et al}. followed a similar approach, they extracted topic-based features, time features and sequential features from web browsing history to train a stacked-SVM classifier to predict gender. One interesting finding was that males inclined to switch between different webpage categories more regularly \cite{phuong2014gender}. Other features based on their catalog viewing information on e-commerce system, such as shopping records, items viewed, and time of access, were adopted to train the gender classifier \cite{duong2016customer}. In paper \cite{bi2013inferring}, by mapping both Facebook likes data and Bing search queries to ODP(Open Directory Project), the coarse-grained common representation was able to build the gender predictor.
 	
 	\section{Methods}
 	
-	The main topic of this seminar paper is how to precisely classify user gender on the web. After literature reviews, we have found three dominating method groups to approach the topic, by exploring textual features, visual features and behavioral features respectively. Nevertheless, it is not achievable to simply compare model metrics (accuracy, F1 score and etc. ) obtained from the model evaluation from each method group by reason of the diverse data applied for training. Therefore, the techniques exploited to predict gender on the web are introduced separately for each method group in the following. 
+	The main topic of this seminar paper is how to precisely classify user gender on the web. After literature reviews, we have found three dominating method groups to approach this topic, through exploring textual features, visual features and behavioral features respectively. Nevertheless, it is not achievable to simply compare model metrics (accuracy, F1 score and etc. ) obtained from the model evaluation from each method group because of the diverse data applied for training. Therefore, those techniques exploited to predict gender on the web are introduced separately for each method group in the following. 
 	
 	\subsection{Textual features model}
 	
-	As previously discussed, the textual data such as tweets, blogs, movie reviews, could be utilized to train a gender classifier. Twitter, one of the most popular social networking forums, naturally becomes a great source for researchers to investigate on. And recent developments of referring gender from tweets have attracted much attention. One novel method to detect gender of Twitter users was proposed by Rao et al. \cite{rao2010classifying}, who introduced stacked-SVM-based classification algorithms over a vast of features gleaned from Sociolinguistic model and N-gram model.  \\
+	As previously discussed, the textual data such as tweets, blogs, movie reviews, could be utilized to train a gender classifier. Twitter, one of the most popular social networking forums, naturally becomes a great source for researchers to investigate on. And recent developments of referring to gender from tweets have attracted much attention. One novel method to detect the gender of Twitter users was proposed by Rao et al. \cite{rao2010classifying}, who introduced stacked-SVM-based classification algorithms over a vast of features gleaned from Sociolinguistic model and N-gram model.  \\
 	
 	Though predicting gender from their first names had high accuracy as described in \cite{karimi2016inferring}, many Twitter users tend not to use their real names, causing difficulty in distinguishing those true names. As a result, only the message content of the tweets or reply for the tweets were crawled and manually annotated by two independent annotators, served as the training datasets.  \\
 	
-	In \cite{jinyu2014study}, it has concluded that people will have their own gender characteristics while using the language either from physiology or psychology, causing the sociolinguistic differences, which facilitates to detect gender. In this case, the utterance-choosing differences could be treated as features, including vocabulary difference, syntactic difference and etc. As displayed in Table \ref{table:linguistic-feature}, some sociolinguistic features had been acquired from tweets messages. Then an SVM \cite{suykens1999least}based binary classifier was built based on these sociolinguistic features \cite{rao2010classifying}. Besides, the N-gram language model was widely used to analyze texts, which was also included in the paper. First, the authors preprocessed on texts, like digits normalization, text lowercase, tokenization, emoticons and specific punctuation preservation, to produce unigrams and bigrams. Then they brought out an SVM-based classification model employing unigrams and bigrams. Finally, the best performing classification model discovered was to use stacked-SVM to combine predictions from Sociolinguistic and N-gram models accompany with their prediction weights  \cite{rao2010classifying}.
+	In \cite{jinyu2014study}, it has concluded that people will have their own gender characteristics while using the language either from physiology or psychology, causing the sociolinguistic differences, which facilitates to detect gender. In this case, the utterance-choosing differences could be treated as features, including vocabulary difference, syntactic difference and etc. As displayed in Table \ref{table:linguistic-feature}, some sociolinguistic features had been acquired from tweets messages. On the left column, a list of sociolinguistic features is given, including the usage of ellipses, repeated characters, excitement and etc. On the right side, we could see the examples correspond to each feature. We might argue females use repeated characters or excitement more frequently since previous studies had already found out that females tend to use more emotional languages. To verify this assumption, an SVM \cite{suykens1999least}based binary classifier was built based on these sociolinguistic features \cite{rao2010classifying}. Besides, the N-gram language model was widely used to analyze texts, which was also included in the paper. First, the authors preprocessed on texts, like digits normalization, text lowercase, tokenization, emoticons and specific punctuation preservation, to produce unigrams and bigrams. Then they brought out an SVM-based classification model employing unigrams and bigrams. Finally, the best performing classification model discovered was to use stacked-SVM to combine predictions from Sociolinguistic and N-gram models accompany with their prediction weights \cite{rao2010classifying}.
 	
 	\begin{table}
 		\caption{List of Sociolinguistic features  \cite{rao2010classifying}}
@@ -88,112 +88,56 @@
 	
 	\subsection{Visual features model}
 	
-	Accordingly, visual features could be derived from images, either from the profile picture or from the pictures posted by users on popular image-based social media platforms, like Instagram and Pinterest. In order to infer gender, one simple method is to extract the human face from the profile image, then apply the face image detection method. Surprisingly, this method was able to achieve the record performance around 97\% F1 score as stated in \cite{antipov2016minimalistic}, by using ensemble CNN-based model. However, face image detection from a profile image is not sufficient for gender prediction and cannot be fully trusted. For one reason, the profile image might contain multiple faces of different gender, leading inaccurate prediction without the knowledge of the real account holder. Besides, if the image is blurry or the face is not visible, the prediction results might get impacted. In an extreme situation,  it is infeasible to make face detection if there is no face in the profile image. \\
+	Accordingly, visual features could be derived from images, either from the profile picture or from the pictures posted by users on popular image-based social media platforms, like Instagram or Pinterest. In order to infer gender, one simple method is to extract the human face from the profile image, then apply the face image detection method. Surprisingly, this method was able to achieve the record performance around 97\% F1 score as stated in \cite{antipov2016minimalistic}, by using ensemble CNN-based model. The F1 score is the harmonic mean of the precision and recall, where an F1 score reaches its best value at 1 and worst at 0. Though with high accuracy to detect gender, face image detection from a profile image is not sufficient for gender prediction and cannot be fully trusted. For one reason, the profile image might contain multiple faces of different gender, leading inaccurate prediction without the knowledge of the real account holder. Besides, if the image is blurry or the face is not visible, the prediction results might get impacted. In an extreme situation,  it is infeasible to make face detection if there is no face in the profile image. \\
 	
-	Considered that those pictures posted by users on social media are tied in with their gender. Therefore, gender prediction based on semantic analysis of social media images was proposed to alleviate the above detection problems. The idea was illustrated in \cite{you2014eyes}, by first extracting the concept of the image based on the content, then mapped it to predefined semantics, including 33 categories (see Table \ref{table:list-categories}), such as animal, art, sports and etc. And the framework for building user-level visual topic distribution in different categories was shown in Figure \ref{fig:visual_topic}. Later, they utilized the visual content features to train SVM classifiers on top of the semantic model. To be more specific, each user could be denoted by a feature vector with length 33, each element in the vector representing one category. The vector was calculated by accumulating the number of images belonging to each category then normalized by the number of images posted by all training users with respect to categories. Finally, the feature vector was fed to the SVM classifiers. \\
+	Considered that posting various kinds of pictures on social media is relevant to their gender, gender prediction based on semantic analysis of social media images was proposed to alleviate the above detection problems. The idea was illustrated in \cite{you2014eyes}, by first extracting the concept of the image based on the image content, then mapped it to predefined semantics, including 33 categories, such as animal, art, sports and etc. A full list of semantic categories could be found in \cite{you2014eyes}. Later, they utilized the visual content features to train SVM classifiers on top of the semantic model. To be more specific, each user could be denoted by a feature vector with length 33, with each element in the vector representing one category. The vector was calculated by accumulating the number of images belonging to each category then normalized by the number of images posted by all training users with respect to categories. Finally, the feature vector was fed to the SVM classifiers. \\
 	
-	\begin{table}
-		\caption{List of Categories}
-		\hskip-2.5cm \begin{tabular}{| l | l | l | l | l | l | l | }
-			\hline
-			Animals & Architecture
-			& Art & Cars \& Motorcycles & Celebrities
-			& Design
-			& DIY \& Crafts \\
-			\hline
-			Education & Film, Music \& Books & 
-			Food \& Drink  & Gardening & Geek
-			& Hair \& Beauty
-			& Health \& Fitness \\
-			\hline
-			History & Holidays \& Events
-			& Home Decor &  Humor & Illustrations \& Posters
-			& Kids
-			& Men’s Fashion \\
-			\hline
-			Outdoors & Photography
-			& Products
-			& Quotes & Science \& Nature
-			& Sports
-			& Tattoos \\
-			\hline
-			Technology & Travel
-			& Weddings
-			& Women’s Fashion & Other & &  \\
-			\hline
-		\end{tabular}
-		\label{table:list-categories}
-	\end{table}
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=1.3\textwidth]{img/visual_topic.png}
-		\caption{Framework for building user-level visual topic distribution in different categories}
-		\label{fig:visual_topic}
-	\end{figure}
 	
 	\subsection{Behavioral features model}
 	
-	It is not hard to observe that there are plenty of behavioral features being exploited to detect gender on the web, including web browsing history, web search queries, e-commerce data and etc. In this seminar paper, it is intended to have a deep look into the method that made use of Facebook likes data and web search queries data to predict the gender of Bing search users. \\
+    It is not hard to observe that there are plenty of behavioral features being exploited to detect gender on the web, including web browsing history, web search queries, e-commerce data and etc. In this seminar paper, it is intended to have a deep look into the method that made use of Facebook likes data and web search queries data to predict the gender of Bing search users. \\
+
+	The idea was that they aimed to develop a coarse-grained common representation which matched Facebook Likes against search queries. And the key intuition was that whether a user is interested in some specific categories or not relies on the gender and other demographics, independent of the web applications. In this case, the common representation for each user was a 219-dimensional feature vector, denoting 219 various categories on the web within the Open Directory Project (ODP). Then a gender classifier was trained based on the Facebook Likes data, and afterwards to predict the gender of users by applying the classifier to the Bing search queries \cite{bi2013inferring}. \\
 	
-	The idea was that they aimed to develop a coarse-grained common representation which matched Facebook Likes against search queries (see Figure \ref{fig:facebook_bing}). And the key intuition was that whether a user is interested in some specific categories or not relies on the gender and other demographics, independent of the web applications. In this case, the representation for each user was a 219-dimensional feature vector, denoting 219 various categories on the web within the Open Directory Project (ODP). Then a gender classifier was trained based on the Facebook Likes data, and afterwards to predict the gender of users by applying the classifier to the Bing search queries \cite{bi2013inferring}. \\
-	
-	To be more detailed, for each Facebook like data, the title of the corresponding liked item or event was extracted and fed into the Bing search engine. After obtaining the top 10 results returned from the search engine, assigning three categories for each result then fitting the results to feature vectors. Repeat the same process for each Facebook like data and each user. In general, for each user, a 219-dimensional feature vector should be maintained, which also requires normalization properly. Then apply the logistic regression model with L2 regularization to fit the input feature vectors. Following the same concept, a 219-dimensional feature vector was preserved for each Bing search user. Afterwards, we could predict the gender of the Bing search users using the pre-trained logistic regression model. \\
+	To be more detailed, for each Facebook like data, the title of the corresponding liked item or event was extracted and fed into the Bing search engine. After obtaining the top 10 results returned from the search engine, assigning three categories for each result then fitting the results to feature vectors. Repeat the same process for each Facebook like data and each user. In general, for each user, a 219-dimensional feature vector should be maintained, with each element in the vector denoting the number of categories related to this user. Usually, the normalization for this feature vector was required by dividing the sum of all categories. Then the input feature vectors were fitted to the logistic regression model with L2 regularization. Following the same concept, a 219-dimensional feature vector was preserved for each Bing search user. In other words, we could identify three matching categories of each top ten results returned from the search engine for each query. Similarly, each 219-dimensional feature vector represented the corresponding user. Afterwards, we could predict the gender of the Bing search users using the pre-trained logistic regression model. \\
 	
 	In a nutshell, we could train a gender classifier based on user Facebook Likes data, then tested it on users distinguished by their search queries.  \\
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.8\textwidth]{img/facebook_bing.png}
-		\caption{Common representation between Facebook likes and Bing search queries}
-		\label{fig:facebook_bing}
-	\end{figure}
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.8\textwidth]{img/facebook_bing.png}
+%		\caption{Common representation between Facebook likes and Bing search queries}
+%		\label{fig:facebook_bing}
+%	\end{figure}
 	
 	\section{Results \& Discussion}
-	In this section, experiments were conducted to evaluate the performance of methods stated in previous section respectively. Various experiment results and evaluation metrics were exposed in the following.
+	From the previous section, methods were separately introduced to detect gender, therefore, experiments had to be conducted on each method respectively. Since each method may use different experiments settings, the details will be covered in the following subsections. To evaluate the model performance, the F1 score is widely used, which is the harmonic mean of the precision and recall, where an F1 score reaches its best value at 1 and worst at 0. It has to be mentioned that only the very relevant results are shown below and if necessary the detailed results could be found in the original paper. 
 	
 	\subsection{Results for Textual features model}
 	
-	It needs to be mentioned that partial results are directly borrowed from the original paper \cite{rao2010classifying}, and reorganized in the below. In Table \ref{table:text_results}, we could find that stacked-SVM method which combined both sociolinguistic feature and N-gram feature outperformed the other two, achieving 72\% accuracy. Also from Table  \ref{table:frequency}, it could be simply acknowledged that females tended to use emoticons, ellipses more often. In addition, females were prone to use OMG four times more than males. And males were less possible to use repeated character and exclamation in tweets. Besides, an overview of performance measurement on textual-features based classification model is listed in Table \ref{table:textual_work}.  As you may notice, word embedding techniques like BOW and Glove could facilitate to predict gender with accuracy 82\%. And the last row showed that if just first names were used as input features, the prediction accuracy reached around 82\%. However, if we combined the features derived from face images and first names, the accuracy could rise to 92\%. It gives us some indications that we could combine several types of features. 
+	In the original paper \cite{rao2010classifying}, we could find out that stacked-SVM method which combined both sociolinguistic features and N-gram features outperformed the other two, achieving 72\% accuracy. The model that exploited sociolinguistic features only achieved 71\%, which is slightly worse than the stacked-SVM model. And the N-gram model only reached 69\% accuracy. Though the performance of these three models was quite comparable, still we could argue that the combination of features should perform better in a larget dataset. To further study on the sociolinguistic features as displayed in \ref{table:linguistic-feature}, some interesting results were discovered. The results showed that females tended to use emoticons, ellipses more often. In addition, females were prone to use OMG four times more than males. And males were less possible to use repeated character and exclamation in tweets. \\
+	
+	Besides, an overview of performance measurement on the textual-features based classification model is listed in Table \ref{table:textual_work}.  As you may notice, word embedding techniques like BOW and Glove could facilitate to predict gender with accuracy 82\%. The results for the second paper was already explained in detail above. And the last row showed that if just first names were used as input features, the prediction accuracy reached around 82\%. However, if we combined the features derived from face images and first names, the accuracy could rise to 92\%. It gives us some indications that we could combine several types of features. 
 	
 	
-	\begin{table}[!htb]
-		\centering
-		%	\caption{Global caption}
-		\begin{minipage}{.5\linewidth}
-			\caption{Gender detection results \cite{rao2010classifying}}
-%			\centering
-				\begin{tabular}{| x{3cm} | x{2cm} |}
-				\hline
-				\textit{Model} & \textit{Accuracy} \\
-				\hline
-				Sociolinguistic & 71\%\\
-				N-gram &  69\%\\
-				Stacked-SVM & 72\% \\
-				Prior & 50\% \\
-				\hline
-			\end{tabular}
-			\label{table:text_results}
-		\end{minipage}%
-		\begin{minipage}{.6\linewidth}
-			\centering
-			\caption{Sociolinguistic features expressed as relative frequency of females and males \cite{rao2010classifying}}
-			\begin{tabular}{| l | x{3cm} | c |}
-				\hline
-				Features &  Example & \#female/\#male\\
-				\hline
-				Emoticons &  :), :D & 3.5\\
-				Ellipses &  ....  & 1.5\\
-				Character repetition & nooo waaay & 1.4\\
-				Repeated exclamation & !!!!  &  2.0 \\
-				Puzzled punctuation & !?!!??! & 1.8\\
-				OMG & Oh My God & 4.0\\
-				\hline
-			\end{tabular}
-			\label{table:frequency}
-		\end{minipage} 
-	\end{table}
-	
+%	\begin{table}
+%		\centering
+%		\caption{Sociolinguistic features expressed as relative frequency of females and males \cite{rao2010classifying}}
+%		\begin{tabular}{| l | x{3cm} | c |}
+%			\hline
+%			Features &  Example & \#female/\#male\\
+%			\hline
+%			Emoticons &  :), :D & 3.5\\
+%			Ellipses &  ....  & 1.5\\
+%			Character repetition & nooo waaay & 1.4\\
+%			Repeated exclamation & !!!!  &  2.0 \\
+%			Puzzled punctuation & !?!!??! & 1.8\\
+%			OMG & Oh My God & 4.0\\
+%			\hline
+%		\end{tabular}
+%		\label{table:frequency}
+%	\end{table}
+		
 	\begin{table}
 		\caption{Textual features based related work }
 		\centering
@@ -202,7 +146,7 @@
 			Author  &  Data  & Methods & Performance(F1)\\
 			\hline
 			E.Vasilev \cite{Vasilev:Thesis:2018} &  Reddit Comments & BOW, Glove, CNN & 82\%\\
-			D. Rao et al., \cite{rao2010classifying} &  Tweets  & Sociolinguistics-features, N-gram-features & 72\%\\
+			D. Rao et al., \cite{rao2010classifying} &  Tweets  & Sociolinguistics, N-gram & 72\%\\
 			F. Karimi et al., \cite{karimi2016inferring} & Names/face Images  & Name/Image based detection &  82\%/92\%\\
 			\hline
 		\end{tabular}
@@ -211,8 +155,9 @@
 	
 	\subsection{Results for Visual features model}
 	
-	As stated in the paper \cite{you2014eyes}, 10-fold cross validation was conducted to evaluate the performance of image semantic analysis in terms of accuracy, precision, recall and F1 score. Results could be found in Table \ref{table:social_image}. It was found out that this method had higher performance while detecting female users than detecting male users, which could be argued that female users tended to post more pictures, leading more stable results for prediction. Overall the average accuracy and F1 score measure were around 66\%, which didn\textquotesingle t perform well enough.
-	However, a similar idea was also experimented by Merler \cite{merler2015you} and the performance was improved to 76\% by enlarging the training dataset and employing some additional visual information, such as the colors. Also, an overview of related work about exploiting visual features to detect gender is listed in Table \ref{table:visual_work}. In this table, we observed that face image detection method performed best, but it suffered many challenges as explained before. Therefore, one possible way to imporve gender prediction is to combine the face image detection and image semantic analysis. 
+	As stated in the paper \cite{you2014eyes}, ten-fold cross-validation was conducted to evaluate the performance of image semantic analysis in terms of accuracy, precision, recall and F1 score. Results could be found in Table \ref{table:social_image}. It was found out that this method had higher performance while detecting female users than detecting male users, which could be argued that female users tended to post more pictures, leading more stable results for prediction. Overall the average accuracy and F1 score measure were around 66\%, which didn\textquotesingle t perform as we expected. However, a similar idea was also experimented by Merler \cite{merler2015you} and the performance was improved to 76\% by enlarging the training dataset and employing some additional visual information, such as the colors. \\
+	
+	Also, an overview of related work about exploiting visual features to detect gender is listed in Table \ref{table:visual_work}. In this table, we observed that the face image detection method performed the best, but it suffered many challenges as explained before. And the other two focused on image semantic analysis, achieving 66\% and 76\% accuracy respectively. Since the results for face image detection is not stable and image semantic analysis does not work well alone, therefore, one possible approach to improve gender prediction is to combine the face image detection and image semantic analysis. 
 	
 	\begin{table}
 		\caption{Performance of image semantic analysis }
@@ -248,22 +193,23 @@
 	
 	\subsection{Results for Behavioral features model}
 	
-	The Facebook Likes data were gathered from myPersonality Facebook, and the search queries were collected from Bing Query Logs. As described in the method section, there were two classifiers, one for females detection and the other one for males detection. Classification models were trained on Facebook Likes data, then we applied classifiers to Bing search queries data to detect gender. In practice, the authors also tested models on test data of Facebook Likes in order to compare the performance with testing results on Bing search queries data. For measuring the model performance, receiver operating characteristic (ROC) curve was used, which is created by plotting the true positive rate (TPR) against the false positive rate (FPR) at various threshold settings. Just to know, in the binary classification tasks, the model performs better if the area under the ROC curve is closer to 1, which indicates that this classification is perfect if the area is 1. \\
+    The Facebook Likes data were gathered from myPersonality Facebook, and the search queries were collected from Bing Query Logs. As described in the method section, there were two classifiers, one for females detection and the other for males detection. Classification models were trained on Facebook Likes data, then we applied classifiers to Bing search queries data to detect gender. In practice, the authors also tested models on test data of Facebook Likes in order to compare the performance with testing results on Bing search queries data. For measuring the model performance, receiver operating characteristic (ROC) curve was used, which is created by plotting the true positive rate (TPR) against the false positive rate (FPR) at various threshold settings. Just to know, in the binary classification tasks, the model performs better if the area under the ROC curve is closer to 1, which indicates that this classification is perfect if the area is 1. \\
 	
-	The experiments results could be tracked back from \cite{bi2013inferring}. It showed that the average accuracy for gender detection achieved 83\% and 80\% on Facebook test data and Bing queries test data respectively. Not surprisingly, the performance was slightly better when tested on Facebook since the models were trained on Facebook data. Nevertheless, the relative difference was not significant, which further stood by the assumption that the relation between user interests and user demographics was independent of Facebook and Bing search engine. 
-	Accordingly, an overview of related work about exploiting behavioral features to infer gender is listed in Table \ref{table:behavioral_work}. Observed from that, though adopting diverse behavioral features or behavioral feature combinations and using various machine learning related methods, their performces achieve quite similiar, which are about 80\% F1 score accuracy. It is quite amazing or mahybe there is even a natural upper limit for gender prediction accuracy based on user behaviors. 
+	The experiments results could be tracked back from \cite{bi2013inferring}. It showed that the average accuracy for gender detection achieved 83\% and 80\% on Facebook test data and Bing queries test data respectively. Not surprisingly, the performance was slightly better when tested on Facebook since the models were trained on Facebook data. Nevertheless, the relative difference was not significant, which further stood by the assumption that the relation between user interests and user demographics was independent of Facebook and Bing search engine. \\
+	
+	Accordingly, an overview of related work about exploiting behavioral features to infer gender is listed in Table \ref{table:behavioral_work}. Observed from that, though using diverse behavioral features or feature combinations, the results of their performances were quite similar, which were about 80\% F1 score accuracy. Maybe we could argue that there is even a natural upper limit for gender prediction accuracy based on user behaviors. 
 	
 	\begin{table}
 		\caption{Behavioral features based related work }
 		\centering
 		\begin{tabular}{| l | l | l | c | }
 			\hline
-			Author  &  Data  & Methods & Performance(F1)\\
+			Author  &  Data  & Methods & F1\\
 			\hline
 			Hu, et al.,  \cite{hu2007demographic} & Webpage click-through data
 			& Bayesian Framework
 			& 80\% \\
-			B. Bi et al., \cite{bi2013inferring} & Facebook likes \& Bing search queries & Logistic regression & 80\% \\
+			B. Bi et al., \cite{bi2013inferring} & Facebook likes \& Search queries & Logistic regression & 80\% \\
 			T. M. Phuong et al., \cite{phuong2014gender} & Web browsing history & SVM, LDA, N-gram
 			& 81\% \\
 			Zhong et al., \cite{zhong2015you} & Location checkins & Tensor Factorization & 81\% \\
@@ -280,11 +226,11 @@
 	
 	For textual feature analysis, almost all papers concentrate on English texts and to study the linguistic differences between females and males. Though it might achieve reasonable results in English, it is not perfect and might suffer from other language systems, like Japanese \cite{ciot2013gender}. Since Japanese and English are in different language system, their linguistic features are not exactly consistent with each other, causing poor performance on Japanese using the same training features. As seen the results from Table \ref{table:language}, exploiting the same linguistic features on different language dataset, Turkish outperformed other languages with overall accuracy 87\%. However, the accuracy lowered down to 63\% when applying the method to Japanese. Therefore, it gives an indication that we might need to explore more linguistic features to make this method more robust or we need to develop language-specific classification models. \\
 	
-	As for the visual features, we notice that face image detection method can perform very well, but it also suffers many challenges. Inspired by the fact presented previously that if we just use first names to predict gender, we obtain 82\% accuracy, however, it rises to reach 92\% accuracy when we combine the the features from first names and face image. Thus, we could argue that the classification model could perform better while combining several types of features than just relying on purely visual features. \\
+	As for the visual features, we notice that the face image detection method can perform very well, but it also suffers many challenges, like image occlusion or image invisibility. Inspired by the fact presented previously that if we just use first names to predict gender, we obtain 82\% accuracy, however, it rises to reach 92\% accuracy when we combine the features first names with face image. Thus, we could argue that the classification model could perform better while combining several types of features than just relying on purely visual features. \\
 	
 	After observing the results from various behavioral features, it is surprising to find out that it seems to exist an upper bound on gender prediction accuracy since all papers lead to similar accuracy around 80\% yet using different classification methods and various behavioral features. Of course, we could challenge this assumption by combining behavioral features and other types of features to see whether the upper limit always exists. \\
 	
-	To sum up, for individual features, first names and face image could be treated relatively the best features to detect gender on the web. Even more, if we combine those two features, we could achieve better performance. However, due to the lack of full name database and image quality problem, we could not employ these features in any situations. Thus, we could also exploit behavioral features, leading more stable performances. Since we have witnessed that the combination of textual features and visual features could result in good performance, we might wonder using textual features and behavioral features at the same time to predict gender, or similarly, we could combine visual features and behavioral features or even three of them. Furthermore, if we want to develop a better gender classification model, we might need to explore more features and the combinations of different features.
+	To sum up, for individual features, first names and face image could be treated relatively the best features to detect gender on the web. Even more, if we combine those two features, we could achieve better performance. However, due to the lack of a full name database and image quality problem, we could not employ these features in any situations. Thus, we could also exploit behavioral features, leading to more stable performances. Since we have witnessed that the combination of textual features and visual features could result in good performance, we might wonder using textual features and behavioral features at the same time to predict gender, or similarly, we could combine visual features and behavioral features or even three of them. Furthermore, if we want to develop a better gender classification model, we might need to explore more features and combinations of different kinds features.
 	
 	\begin{table}
 		\centering
